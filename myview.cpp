@@ -6,13 +6,13 @@ MyView::MyView()
 {
     /* set up scene */
     scene = new QGraphicsScene();
-    scene->setBackgroundBrush(Qt::green);
 
     this->setScene(scene);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setMinimumSize(640, 480);
     scene->setSceneRect(0,0, 640, 480);
+    scene->setBackgroundBrush(QPixmap(":/img/Resources/background.png").scaled(640,480, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
     /* clear memory */
     memset(pile, 0, sizeof(Card*)*7);
@@ -74,7 +74,6 @@ void MyView::startNewGame()
             c = c->next;
         }
         c->setZValue(z);
-        c->next = NULL;
         scene->addItem(c);
         cards.append(c);
         c->setPos(step/2 + z*step, 100 + 20*z);

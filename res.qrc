@@ -62,5 +62,6 @@
         <file>Resources/spades_12.png</file>
         <file>Resources/spades_13.png</file>
         <file>Resources/addGamebutton.png</file>
+        <file>Resources/background.png</file>
     </qresource>
 </RCC>

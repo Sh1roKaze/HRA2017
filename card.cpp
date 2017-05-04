@@ -34,12 +34,6 @@ void Card::setValue(int val)
 
 void Card::moveCard(qreal hor, qreal vert)
 {
-    if (x() + hor*scale() < 0 or x() + hor*scale() + pixmap().width()*scale() > 640) {
-        return;
-    }
-    if (y() + vert*scale() < 0 or y() + vert*scale() + pixmap().height()*scale() > 480) {
-        return;
-    }
     this->setPos(x() + hor*scale(), y() + vert*scale());
 
     if (this->next != NULL) {
@@ -63,7 +57,6 @@ void Card::mousePressEvent(QGraphicsSceneMouseEvent *event)
         lastY = pos().y();
     }
     if (event->button() == Qt::RightButton) {
-        //setPixmap(QPixmap(":/img/Resources/spades_A.png"));
         this->movable = 1;
     }
 
