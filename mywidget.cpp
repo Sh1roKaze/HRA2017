@@ -33,19 +33,27 @@ void myWidget::applyViewList()
     for (int i = 0; i < viewList.length(); i++) {
         short gs = viewList[i]->getGameState();
         if (gs == 0) {
+                fourGameLayout->removeWidget(viewList[i]);
                 delete viewList[i];
                 viewList.removeAt(i);
         }
     }
 
     /* sets layout */
-    qDebug() << viewList.length();
     fourGameLayout->addWidget(viewList[0], 0, 0, 1, 1, 0);
 
     if (viewList.length() > 1) {
         fourGameLayout->addWidget(viewList[1], 0, 1, 1, 1, 0);
         fourGameLayout->addWidget(empty1, 1, 0, 1, 1, 0);
         fourGameLayout->addWidget(empty2, 1, 1, 1, 1, 0);
+        empty1->show();
+        empty2->show();
+    } else {
+        fourGameLayout->addWidget(viewList[0], 0, 0, 2, 2, 0);
+        fourGameLayout->removeWidget(empty1);
+        fourGameLayout->removeWidget(empty2);
+        empty1->hide();
+        empty2->hide();
     }
 
     if (viewList.length() == 3) {
