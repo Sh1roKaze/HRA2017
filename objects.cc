@@ -14,16 +14,14 @@ namespace Hra2017
         info.hidden = false;
     }
 
-    Card::Card(char data)
+    Card::Card(unsigned char data)
     {
         int num = data & 15;
         int col = (data & 48) >> 4;
         bool hid = ((data & 64) >> 6) == 1;
 
-        if (num < 1 || num > 13)
-            throw "BAD_NUMBER";
-        if (col < 0 || col > 3)
-            throw "BAD_COLOR";
+        if (num < 1 || num > 13 || col < 0 || col > 3 || data > 127)
+            throw "BAD_DATA";
 
         info.number = (CardNumber)num;
         info.color = (CardColor)col;
@@ -351,12 +349,14 @@ namespace Hra2017
         return stock == nullptr;
     }
 
-    CardInfo Game::getWasteTop()
+    std::vector<CardInfo> Game::getWaste()
     {
-        CardInfo info{};
+        std::vector<CardInfo> infos;
+
         if (waste != nullptr)
-            info = waste->getTopMost()->getCardInfo();
-        return info;
+            waste->fillInfoVector(infos);
+
+        return infos;
     }
 
     std::vector<CardInfo> Game::getFoundationPile(int pileIndex)
