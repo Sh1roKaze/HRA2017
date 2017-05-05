@@ -75,6 +75,8 @@ void MyView::loadGame()
 
     }
 */
+    layoutCards();
+
 }
 
 void MyView::startNewGame()
@@ -97,23 +99,22 @@ void MyView::startNewGame()
             c->setZValue(i);
             scene->addItem(c);
             cards.append(c);
-            c->setPos(step/2 + z*step, 100 + 20*i);
             temp = c;
             c = c->next;
         }
         c->setZValue(z);
         scene->addItem(c);
         cards.append(c);
-        c->setPos(step/2 + z*step, 100 + 20*z);
         c->setValue(4, 4);
     }
 
     for (int i = 0; i < 4; i++) {
         foundation[i] = new MyCard();
-        foundation[i]->setPos(step/2 + 3*step + i*step, 10);
         foundation[i]->setPixmap(QPixmap(":/img/Resources/placementBorder.png"));
         scene->addItem(foundation[i]);
     }
+
+    layoutCards();
 
     gameState = 1;
 }
@@ -127,32 +128,43 @@ void MyView::resizeEvent(QResizeEvent *event)
         for (int i = 0; i < cards.count(); ++i) {
             cards[i]->setScale(cards[i]->scale()*a);
         }
-        for (int i = 0; i < 5; i++) {
-            if (button[i] == NULL) {
-                break;
-            }
+        for (int i = 0; i < 6; i++) {
             button[i]->setScale(button[i]->scale()*a);
-            button[i]->setPos(button[i]->pos().x(), height() - button[i]->y()*button[i]->scale());
         }
     }
 
     if (-1 != event->oldSize().width())
     {
-        float newStep = this->width() / 8;
-        for (int z = 0; z < 7; z++)
-        {
-            if (pile[z] == NULL) { continue; }
-            pile[z]->setPos(newStep/2 + z*newStep, 100);
-            int i = 0;
-            for (MyCard *c = pile[z]; c; i++, c = c->next)
-                c->setPos(newStep/2 + z*newStep, 100 + 20*i);
-        }
+        layoutCards();
     }
 }
 
 void MyView::layoutCards()
 {
+    float stepW = this->width() / 8;
+    for (int z = 0; z < 7; z++)
+    {
+        if (pile[z] == NULL) { continue; }
+        pile[z]->setPos(stepW/2 + z*stepW, 100);
+        int i = 0;
+        for (MyCard *c = pile[z]; c; i++, c = c->next)
+            c->setPos(stepW/2 + z*stepW, 100 + 20*i);
+    }
 
+    for (int z = 0; z < 4; z++)
+    {
+        if (foundation[z] == NULL) { continue; }
+        foundation[z]->setPos(stepW/2 + z*stepW, 100);
+        int i = 0;
+        for (MyCard *c = foundation[z]; c; i++, c = c->next)
+            c->setPos(stepW/2 +3*stepW + z*stepW, 10);
+    }
+
+    qreal a = 300*button[0]->scale();
+    for (int z = 0; z < 5; z++) {
+        button[z]->setPos(stepW/2 + z*a + z*10, height() - a - 10);
+    }
+    button[5]->setPos(width() - stepW/2 - a, height() - a - 10);
 }
 
 MyButton *MyView::getButton5()
