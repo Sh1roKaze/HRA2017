@@ -27,13 +27,15 @@ SOURCES += main.cpp\
     mywidget.cpp \
     myview.cpp \
     card.cpp \
-    mybutton.cpp
+    mybutton.cpp \
+    objects.cc
 
 HEADERS  += \
     mywidget.h \
     myview.h \
     card.h \
-    mybutton.h
+    mybutton.h \
+    objects.h
 
 RESOURCES += \
     res.qrc

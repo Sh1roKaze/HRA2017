@@ -1,26 +1,28 @@
 #ifndef CARD_H
 #define CARD_H
 
+#include "objects.h"
+
 #include <QObject>
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSceneMouseEvent>
 
-class Card : public QObject, public QGraphicsPixmapItem
+class MyCard : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
 public:
-    explicit Card(QObject *parent = 0);
+    explicit MyCard(QObject *parent = 0);
     void setValue(int val);
-    void moveCard(qreal vert, qreal hor);
+    void moveMyCard(qreal vert, qreal hor);
     void setDrawOrder(int z);
 
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
-    Card *prev = NULL;
-    Card *next = NULL;
+    MyCard *prev = NULL;
+    MyCard *next = NULL;
 
 signals:
 

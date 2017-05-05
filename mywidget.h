@@ -2,6 +2,7 @@
 #define MYWIDGET_H
 
 #include "card.h"
+#include "objects.h"
 #include "myview.h"
 
 #include <QHBoxLayout>

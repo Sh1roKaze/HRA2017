@@ -5,7 +5,7 @@
 short lastX;
 short lastY;
 
-Card::Card(QObject *parent) : QObject(parent)
+MyCard::MyCard(QObject *parent) : QObject(parent)
 {
     this->setPixmap(QPixmap(":/img/Resources/Cover.png"));
     this->setScale(0.35);
@@ -14,7 +14,7 @@ Card::Card(QObject *parent) : QObject(parent)
     next = NULL;
 }
 
-void Card::setValue(int val)
+void MyCard::setValue(int val)
 {
     if (14 > val and val > 0) {
         this->value = val;
@@ -32,23 +32,23 @@ void Card::setValue(int val)
     }
 }
 
-void Card::moveCard(qreal hor, qreal vert)
+void MyCard::moveMyCard(qreal hor, qreal vert)
 {
     this->setPos(x() + hor*scale(), y() + vert*scale());
 
     if (this->next != NULL) {
-        this->next->moveCard(hor, vert);
+        this->next->moveMyCard(hor, vert);
     }
 }
 
-void Card::setDrawOrder(int z)
+void MyCard::setDrawOrder(int z)
 {
     setZValue(z);
     if (next != NULL)
         next->setDrawOrder(++z);
 }
 
-void Card::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void MyCard::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton and this->movable == 1) {
         this->followMouse = 1;
@@ -62,29 +62,29 @@ void Card::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 }
 
-void Card::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void MyCard::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if (this->followMouse == 1) {
         QPointF a = event->pos() - event->lastPos();
-        moveCard(a.x(), a.y());
+        moveMyCard(a.x(), a.y());
     }
 }
 
-void Card::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void MyCard::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         this->followMouse = 0;
         if (movable == 1) {
 
             QList <QGraphicsItem*> list = this->collidingItems();
-            Card *temp = this->next;
+            MyCard *temp = this->next;
             while (temp != NULL) {
                 int a = list.indexOf(temp);
                 list.removeAt(a);
                 temp = temp->next;
             }
             if (list.empty()) {
-                moveCard((lastX - x())/this->scale(), (lastY - y())/this->scale());
+                moveMyCard((lastX - x())/this->scale(), (lastY - y())/this->scale());
             } else {
                 //TODO consult game rules, connect to
             }

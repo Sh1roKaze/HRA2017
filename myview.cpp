@@ -15,8 +15,8 @@ MyView::MyView()
     scene->setBackgroundBrush(QPixmap(":/img/Resources/background.png").scaled(640,480, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
 
     /* clear memory */
-    memset(pile, 0, sizeof(Card*)*7);
-    memset(foundation, 0, sizeof(Card*)*4);
+    memset(pile, 0, sizeof(MyCard*)*7);
+    memset(foundation, 0, sizeof(MyCard*)*4);
     memset(button, 0, sizeof(MyButton*)*6);
 
     /* init start and stop buttons */
@@ -32,14 +32,7 @@ MyView::MyView()
     scene->addItem(button[0]);
     connect(button[0], SIGNAL(buttonPressed()), this, SLOT(removeButtonPressed()));
 
-    startNewGame();
-}
-
-void MyView::startNewGame()
-{
-    if (reset == 1) {
-        return;
-    }
+    //gameLogic = new Hra2017::Game();
 
     for (int i = 1; i < 5; i++) {
         button[i] = new MyButton(this);
@@ -55,17 +48,34 @@ void MyView::startNewGame()
     connect(button[1], SIGNAL(buttonPressed()), this, SLOT(loadButtonPressed()));
     connect(button[2], SIGNAL(buttonPressed()), this, SLOT(saveButtonPressed()));
 
+    startNewGame();
+}
+
+void MyView::loadGame()
+{
+    std::vector<Hra2017::CardInfo> info = gameLogic->getFoundation();
+
+}
+
+void MyView::startNewGame()
+{
+    if (gameState == 1) {
+        return;
+    }
+
+
+
     float step = width() / 8;
     for (int z = 0; z < 7; z++)
     {
-        pile[z] = new Card(this);
+        pile[z] = new MyCard(this);
         pile[z]->setPos(step/2 + z*step, 100);
-        Card *c = pile[z];
-        Card *temp = NULL;
+        MyCard *c = pile[z];
+        MyCard *temp = NULL;
         for (int i = 0; i < z; i++)
         {
             c->prev = temp;
-            c->next = new Card(this);
+            c->next = new MyCard(this);
             c->setZValue(i);
             scene->addItem(c);
             cards.append(c);
@@ -81,7 +91,7 @@ void MyView::startNewGame()
     }
 
     for (int i = 0; i < 4; i++) {
-        foundation[i] = new Card();
+        foundation[i] = new MyCard();
         foundation[i]->setPos(step/2 + 3*step + i*step, 10);
         foundation[i]->setPixmap(QPixmap(":/img/Resources/placementBorder.png"));
         scene->addItem(foundation[i]);
@@ -116,7 +126,7 @@ void MyView::resizeEvent(QResizeEvent *event)
             if (pile[z] == NULL) { continue; }
             pile[z]->setPos(newStep/2 + z*newStep, 100);
             int i = 0;
-            for (Card *c = pile[z]; c; i++, c = c->next)
+            for (MyCard *c = pile[z]; c; i++, c = c->next)
                 c->setPos(newStep/2 + z*newStep, 100 + 20*i);
         }
     }
@@ -135,7 +145,6 @@ int MyView::getGameState()
 void MyView::removeButtonPressed()
 {
     resetGame();
-    reset = 0;
     gameState = 0;
     emit stopButtonPressed();
 }
@@ -168,8 +177,8 @@ void MyView::saveSelected(QString a)
 void MyView::resetGame()
 {
     for (int z = 0; z < 7; z++) {
-        Card *temp = pile[z];
-        for (Card *c = temp->next; c; c = c->next) {
+        MyCard *temp = pile[z];
+        for (MyCard *c = temp->next; c; c = c->next) {
             delete temp;
             temp = c;
         }
@@ -181,8 +190,8 @@ void MyView::resetGame()
     }
 
     for (int z = 0; z < 4; z++) {
-        Card *temp = foundation[z];
-        for (Card *c = temp->next; c; c = c->next) {
+        MyCard *temp = foundation[z];
+        for (MyCard *c = temp->next; c; c = c->next) {
             delete temp;
             temp = c;
         }

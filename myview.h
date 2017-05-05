@@ -2,6 +2,7 @@
 #define MYVIEW_H
 
 #include "card.h"
+#include "objects.h"
 #include "mybutton.h"
 
 #include <QObject>
@@ -15,6 +16,7 @@ class MyView : public QGraphicsView
     Q_OBJECT
 public:
     MyView();
+    void loadGame();
     void startNewGame();
     void resizeEvent(QResizeEvent *event);
     MyButton *getButton5();
@@ -34,12 +36,12 @@ private:
     void resetGame();
 
     QGraphicsScene *scene;
-    QList <Card*> cards;
-    Card *pile[7];
-    Card *foundation[4];
+    QList <MyCard*> cards;
+    MyCard *pile[7];
+    MyCard *foundation[4];
     MyButton *button[6];
-    short reset = 0;
     short gameState = 0;
+    Hra2017::Game *gameLogic;
 };
 
 #endif // MYVIEW_H
