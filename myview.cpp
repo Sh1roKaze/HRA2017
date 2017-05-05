@@ -22,7 +22,7 @@ MyView::MyView()
     /* init buttons */
     for (int i = 0; i < 5; i++) {
         button[i] = new MyButton(this);
-        button[i]->setPos(10+70*i, (height()- 70));
+        //button[i]->setPos(10+70*i, (height()- 70));
         scene->addItem(button[i]);
     }
 
@@ -40,6 +40,12 @@ MyView::MyView()
     connect(button[0], SIGNAL(buttonPressed()), this, SLOT(removeButtonPressed()));
     connect(button[1], SIGNAL(buttonPressed()), this, SLOT(loadButtonPressed()));
     connect(button[2], SIGNAL(buttonPressed()), this, SLOT(saveButtonPressed()));
+
+    stock = new MyButton(this);
+    stock->setURL(":/img/Resources/Cover.png");
+    stock->setScale(0.35);
+    scene->addItem(stock);
+    connect(stock, SIGNAL(buttonPressed()), this, SLOT(stockToFoundation()));
 
     /* Hra2017::Game initialization */
     gameLogic = new Hra2017::Game();
@@ -80,9 +86,18 @@ void MyView::loadGame()
         }
     }
 
-    std::vector<Hra2017::CardInfo> info = gameLogic->getWaste();
-    for (unsigned int i = 0; i < info.size(); i++) {
-
+    waste = new MyCard(0, this);
+    waste->setPixmap(QPixmap(":/img/Resources/placementBorder.png"));
+    scene->addItem(waste);
+    std::vector<Hra2017::CardInfo> vector = gameLogic->getWaste();
+    MyCard *temp = waste;
+    for (unsigned int x = 0; x < vector.size(); x++) {
+        MyCard *c = new MyCard(0, this);
+        c->setValue(vector[x].hidden, vector[x].color, vector[x].number);
+        scene->addItem(c);
+        temp ->next = c;
+        c->prev = temp;
+        temp = c;
     }
 
     layoutCards(1);
@@ -112,7 +127,7 @@ void MyView::resizeEvent(QResizeEvent *event)
 void MyView::layoutCards(qreal scalingRatio)
 {
     qreal stepW = (width() - width()*0.04) / 7;
-    qreal cardHeight = 243*pile[0]->scale()*scalingRatio + 15;
+    qreal cardHeight = 243*pile[0]->scale()*scalingRatio + height()*0.02 + 10;
     for (int z = 0; z < 7; z++)
     {
         int i = 0;
@@ -128,9 +143,20 @@ void MyView::layoutCards(qreal scalingRatio)
     {
         int i = 0;
         for (MyCard *c = foundation[z]; c; i++, c = c->next) {
-            c->setPos(width()*0.02 +3*stepW + z*stepW, 10);
+            c->setPos(width()*0.02 +3*stepW + z*stepW, height()*0.02);
             c->setScale(c->scale()*scalingRatio);
         }
+    }
+
+    stock->setPos(width()*0.02, height()*0.02);
+    stock->setScale(stock->scale()*scalingRatio);
+
+    int i = 1;
+    for (MyCard *c = waste; c; c = c->next) {
+        c->setPos(width()*0.02 +1*stepW , height()*0.02);
+        c->setScale(c->scale()*scalingRatio);
+        c->setZValue(i);
+        i++;
     }
 
     qreal buttonSize = 300*button[0]->scale();
@@ -189,6 +215,35 @@ void MyView::saveSelected(QString a)
     qDebug() << a;
 }
 
+void MyView::stockToFoundation()
+{
+    if (!gameLogic->isStockEmpty()) {
+        Hra2017::CardInfo info = gameLogic->turnNewCard();
+        MyCard *temp;
+        for ( temp = waste; temp->next != NULL; temp = temp->next) {}
+        temp->next = new MyCard();
+        temp->next->prev = temp;
+        temp = temp->next;
+        temp->setValue(info.hidden, info.color, info.number);
+        scene->addItem(temp);
+        if (gameLogic->isStockEmpty()) {
+            qDebug() << "Empty";
+            stock->setPixmap(QPixmap(":/img/Resources/Joker.png"));
+        }
+    } else {
+        Hra2017::CardInfo info = gameLogic->turnNewCard();
+        MyCard *temp;
+        for ( temp = waste; temp->next != NULL; temp = temp->next) {}
+        temp->next = new MyCard();
+        temp->next->prev = temp;
+        temp = temp->next;
+        qDebug() << info.hidden << info.color << info.number;
+        temp->setValue(info.hidden, info.color, info.number);
+        scene->addItem(temp);
+    }
+    layoutCards(1);
+}
+
 void MyView::resetGame()
 {
     for (int z = 0; z < 7; z++) {
@@ -212,5 +267,14 @@ void MyView::resetGame()
         }
         delete temp;
     }
+
+    MyCard *temp = waste;
+    for (MyCard *c = temp->next; c; c = c->next) {
+        delete temp;
+        temp = c;
+    }
+    delete temp;
+
+    delete stock;
 
 }

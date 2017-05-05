@@ -9,6 +9,7 @@
 class MyButton : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
+
 public:
     explicit MyButton(QObject *parent = 0);
     void setURL(const char *str1);

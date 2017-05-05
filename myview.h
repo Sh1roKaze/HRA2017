@@ -14,6 +14,7 @@
 class MyView : public QGraphicsView
 {
     Q_OBJECT
+
 public:
     MyView();
     void loadGame();
@@ -30,6 +31,7 @@ public slots:
     void loadSelected(QString);
     void saveButtonPressed();
     void saveSelected(QString);
+    void stockToFoundation();
 
 signals:
     void stopButtonPressed();
@@ -41,7 +43,7 @@ private:
     QList <MyCard*> cards;
     MyCard *pile[7];
     MyCard *foundation[4];
-    MyCard *stock;
+    MyButton *stock;
     MyCard* waste;
     MyButton *button[6];
     short gameState = 1;

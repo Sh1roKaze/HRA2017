@@ -51,9 +51,9 @@ int MyCard::isValidMove(int source, int target, int count)
     MyView* thisView = (MyView*) this->parent();
     Hra2017::Game *hra = thisView->getGameLogic();
 
-    if (source == target) { return 0; }
-    if (source < 0 or source > 11) { return 0; }
-    if (target < 1 or target > 11) { return 0; }
+    if (source == target) { return 1; }
+    if (source < 0 or source > 11) { return 1; }
+    if (target < 1 or target > 11) { return 1; }
 
     if (source == 0) {
         if (target < 8) {
@@ -78,9 +78,9 @@ int MyCard::isValidMove(int source, int target, int count)
             qDebug() << "Found to tableu" << source-8 << target-1;
             hra->moveFromFoundationToTableau(source - 8, target - 1);
         }
-        return 0;
+        return 1;
     }
-    return 0;
+    return 1;
 }
 
 void MyCard::moveMyCard(qreal hor, qreal vert)
@@ -138,7 +138,6 @@ void MyCard::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                 moveMyCard((lastX - x())/this->scale(), (lastY - y())/this->scale());
             } else {
                 int target =  ((MyCard*) list.last())->getColumn();
-                //TODO consult game rules, connect to
                 qDebug() << "Source column: " << column;
                 qDebug() << "Target column: " << target;
                 MyCard *temp = next;
@@ -147,9 +146,18 @@ void MyCard::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                     count++;
                     temp =temp->next;
                 }
-                if (isValidMove(column, target, count)) {
+                int a = isValidMove(column, target, count);
+                qDebug() << "RET: " << a;
+                if (0 == a) {
                     //connectMyCard();
                     qDebug() << "Valid move";
+                    prev->next = NULL;
+                    prev->turnCard();
+                    MyCard *temp = (MyCard*) list.last();
+                    while (temp->next != NULL)
+                        temp = temp->next;
+                    temp->next = this;
+
                 } else {
                     moveMyCard((lastX - x())/this->scale(), (lastY - y())/this->scale());
                 }
