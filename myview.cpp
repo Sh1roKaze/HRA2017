@@ -50,13 +50,13 @@ MyView::MyView()
 void MyView::loadGame()
 {
     for (int i = 0; i < 4; i++) {
-        foundation[i] = new MyCard(this);
+        foundation[i] = new MyCard(8 + i, this);
         foundation[i]->setPixmap(QPixmap(":/img/Resources/placementBorder.png"));
         scene->addItem(foundation[i]);
         std::vector<Hra2017::CardInfo> info = gameLogic->getFoundationPile(i);
         MyCard *temp = foundation[i];
         for (unsigned int x = 0; x < info.size(); x++) {
-            MyCard *c = new MyCard(this);
+            MyCard *c = new MyCard(8 + i, this);
             c->setValue(info[x].hidden, info[x].color, info[x].number);
             scene->addItem(c);
             temp->next = c;
@@ -65,13 +65,13 @@ void MyView::loadGame()
     }
 
     for (int z = 0; z < 7; z++) {
-        pile[z] = new MyCard(this);
+        pile[z] = new MyCard(1 + z, this);
         pile[z]->setPixmap(QPixmap(":/img/Resources/placementBorder.png"));
         scene->addItem(pile[z]);
         std::vector<Hra2017::CardInfo> info = gameLogic->getTableauPile(z);
         MyCard *temp = pile[z];
         for (unsigned int x = 0; x < info.size(); x++) {
-            MyCard *c = new MyCard(this);
+            MyCard *c = new MyCard(1+z, this);
             c->setValue(info[x].hidden, info[x].color, info[x].number);
             scene->addItem(c);
             temp->next = c;
@@ -91,40 +91,7 @@ void MyView::loadGame()
 
 void MyView::startNewGame()
 {
-    if (gameState == 1) {
-        return;
-    }
 
-    for (int z = 0; z < 7; z++)
-    {
-        pile[z] = new MyCard(this);
-        MyCard *c = pile[z];
-        MyCard *temp = NULL;
-        for (int i = 0; i <= z; i++)
-        {
-            c->prev = temp;
-            c->next = new MyCard(this);
-            c->setZValue(i);
-            scene->addItem(c);
-            cards.append(c);
-            temp = c;
-            c = c->next;
-        }
-        c->setZValue(z);
-        scene->addItem(c);
-        cards.append(c);
-        c->setValue(1, 4, 4);
-    }
-
-    for (int i = 0; i < 4; i++) {
-        foundation[i] = new MyCard();
-        foundation[i]->setPixmap(QPixmap(":/img/Resources/placementBorder.png"));
-        scene->addItem(foundation[i]);
-    }
-
-    layoutCards(1);
-
-    gameState = 1;
 }
 
 void MyView::resizeEvent(QResizeEvent *event)
@@ -183,6 +150,11 @@ MyButton *MyView::getButton5()
 int MyView::getGameState()
 {
     return gameState;
+}
+
+Hra2017::Game *MyView::getGameLogic()
+{
+    return gameLogic;
 }
 
 void MyView::removeButtonPressed()

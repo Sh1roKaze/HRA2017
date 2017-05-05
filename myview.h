@@ -22,6 +22,7 @@ public:
     void layoutCards(qreal scalingRatio);
     MyButton *getButton5();
     int getGameState();
+    Hra2017::Game *getGameLogic();
 
 public slots:
     void removeButtonPressed();
