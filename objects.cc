@@ -2,8 +2,6 @@
 // Objects representing state of game
 // xvlach16
 
-#include <vector>
-#include <algorithm>
 #include "objects.h"
 
 namespace Hra2017
@@ -65,16 +63,20 @@ namespace Hra2017
         return 0; // SUCCESS
     }
 
-    void Card::putCard(Card **dest)
+    Move Card::putCard(Card **dest)
     {
         if (*dest != nullptr)
-            putCard(&(*base)->onTop);
+            return putCard(&(*dest)->onTop);
         else
         {
+            Move move{this, base, 0};
+
             *dest = this;
             if (this->base != nullptr)
                 *this->base = nullptr;
             this->base = dest;
+
+            return move;
         }
     }
 
@@ -127,21 +129,21 @@ namespace Hra2017
         {
             if (c->getCardInfo().number != CardNumber::ace)
                 return 4; // MUST_BE_ACE
-
-            c->putCard(&foundation[dstPileNumber]);
-            score += 10;
-            return 0; //SUCCESS
+        }
+        else
+        {
+            CardInfo pileTopInfo = foundation[dstPileNumber]->getTopMost()->getCardInfo();
+            if (c->getCardInfo().number != pileTopInfo.number + 1)
+                return 2; // BAD_NUMBER
+            if (c->getCardInfo().color != pileTopInfo.color)
+                return 3; // BAD_COLOR
         }
 
-        Card *pileTop = foundation[dstPileNumber]->getTopMost();
-
-        if (c->getCardInfo().number != pileTop->getCardInfo().number + 1)
-            return 2; // BAD_NUMBER
-        if (c->getCardInfo().color != pileTop->getCardInfo().color)
-            return 3; // BAD_COLOR
-
-        c->putCard(&foundation[dstPileNumber]);
+        Move move = c->putCard(&foundation[dstPileNumber]);
+        move.score = score;
+        history.push(move);
         score += 10;
+
         return 0; //SUCCESS
     }
 
@@ -151,32 +153,21 @@ namespace Hra2017
         {
             if (c->getCardInfo().number != CardNumber::king)
                 return 4; // MUST_BE_KING
-
-            c->putCard(&tableau[dstPileNumber]);
-            return 0; //SUCCESS
         }
-
-        Card *pileTop = tableau[dstPileNumber]->getTopMost();
-
-        if (c->getCardInfo().number != pileTop->getCardInfo().number - 1)
-            return 2; // BAD_NUMBER
-        if ((c->getCardInfo().color & 2) != (pileTop->getCardInfo().color & 2))
-            return 3; // BAD_COLOR
-
-        c->putCard(&tableau[dstPileNumber]);
-        return 0; //SUCCESS
-    }
-
-    void Game::recycleStock()
-    {
-        while(stock != nullptr)
+        else
         {
-            Card *c = waste->getTopMost();
-            c->putCard(&stock);
-            c->hide();
+            CardInfo pileTopInfo = tableau[dstPileNumber]->getTopMost()->getCardInfo();
+            if (c->getCardInfo().number != pileTopInfo.number - 1)
+                return 2; // BAD_NUMBER
+            if ((c->getCardInfo().color & 2) != (pileTopInfo.color & 2))
+                return 3; // BAD_COLOR
         }
+        
+        Move move = c->putCard(&tableau[dstPileNumber]);
+        move.score = score;
+        history.push(move);
 
-        score -= score < 100 ? score : 100;
+        return 0; //SUCCESS
     }
 
     Game::Game()
@@ -198,10 +189,26 @@ namespace Hra2017
             pack[i2++].putCard(&stock);
     }
 
+    /*Game::Game(std::string filename)
+    {
+
+    }*/
+
     void Game::turnNewCard()
     {
+        history.push({nullptr, nullptr, score});
+
         if (stock == nullptr)
-            recycleStock();
+        {
+            while(stock != nullptr)
+            {
+                Card *c = waste->getTopMost();
+                c->putCard(&stock);
+                c->hide();
+            }
+
+            score -= score < 100 ? score : 100;
+        }
         else
         {
             Card *c = stock->getTopMost();
@@ -326,4 +333,42 @@ namespace Hra2017
 
         return infos;
     }
+
+    bool Game::undo()
+    {
+        if (history.empty())
+            return false;
+
+        Move move = history.top();
+        history.pop();
+
+        if (move.card == nullptr)
+        {
+            if (waste == nullptr)
+            {
+                while(waste != nullptr)
+                {
+                    Card *c = stock->getTopMost();
+                    c->putCard(&waste);
+                    c->unhide();
+                }
+            }
+            else
+            {
+                Card *c = waste->getTopMost();
+                c->putCard(&stock);
+                c->hide();
+            }
+        }
+        else
+            move.card->putCard(move.from);
+
+        score = move.score;
+        return true;
+    }
+
+    /*void saveGame(std::string filename)
+    {
+
+    }*/
 }

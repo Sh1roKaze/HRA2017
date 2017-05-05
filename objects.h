@@ -6,7 +6,9 @@
 #define OBJECTS_H
 
 #include <vector>
+#include <stack>
 #include <algorithm>
+#include <string>
 
 namespace Hra2017
 {
@@ -42,16 +44,25 @@ namespace Hra2017
         CardColor color{hearts};
         bool hidden{false};
     };
+    
+    class Card;
+    struct Move
+    {
+        Card *card;
+        Card **from;
+        int score;
+    };
 
     class Card
     {
-    private:
+     private:
         CardInfo info;
         Card *onTop{nullptr};
         Card **base{nullptr};
 
-    public:
+     public:
         Card(CardNumber n, CardColor c);
+
         Card(char data);
 
         bool isTopMost();
@@ -62,7 +73,7 @@ namespace Hra2017
 
         int unhide();
 
-        void putCard(Card **dest);
+        Move putCard(Card **dest);
 
         Card *getTopMost();
 
@@ -77,8 +88,9 @@ namespace Hra2017
 
     class Game
     {
-    private:
+     private:
         std::vector<Card> pack;
+        std::stack<Move> history;
         Card* stock{nullptr};
         Card* waste{nullptr};
         Card* foundation[4]{nullptr};
@@ -87,10 +99,10 @@ namespace Hra2017
 
         int moveToFoundation(Card *c, int dstPileNumber);
         int moveToTableau(Card *c, int dstPileNumber);
-        void recycleStock();
 
-    public:
+     public:
         Game();
+        Game(std::string filename);
 
         void turnNewCard();
         int moveFromWasteToTableau(int dstPileNumber);
@@ -104,6 +116,10 @@ namespace Hra2017
         CardInfo getWasteTop();
         std::vector<CardInfo> getFoundation();
         std::vector<CardInfo> getTableauPile(int pileIndex);
+
+        bool undo();
+
+        void saveGame(std::string filename);
     };
 }
 
