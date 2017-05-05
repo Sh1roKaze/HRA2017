@@ -72,7 +72,6 @@ void MyView::loadGame()
         MyCard *temp = pile[z];
         for (unsigned int x = 0; x < info.size(); x++) {
             MyCard *c = new MyCard(this);
-            qDebug() << info[x].hidden;
             c->setValue(info[x].hidden, info[x].color, info[x].number);
             scene->addItem(c);
             temp->next = c;
@@ -87,7 +86,6 @@ void MyView::loadGame()
     }
 
     layoutCards(1);
-    gameState = 1;
 
 }
 

@@ -26,10 +26,10 @@ void MyCard::setValue(int hidden, int color, int number)
         }
         myStr->append(QString::number(number));
         myStr->append(".png");
-        qDebug() << *myStr;
         face = new QPixmap(*myStr);
-        if (hidden) {
+        if (!hidden) {
             setPixmap(*face);
+            movable = 1;
         }
 }
 
@@ -88,6 +88,10 @@ void MyCard::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                 moveMyCard((lastX - x())/this->scale(), (lastY - y())/this->scale());
             } else {
                 //TODO consult game rules, connect to
+                MyCard *source = prev;
+                MyCard *target = NULL;
+                while (source->prev != NULL)
+                    source = source->prev;
             }
         }
     }

@@ -43,7 +43,7 @@ private:
     MyCard *stock;
     MyCard* waste;
     MyButton *button[6];
-    short gameState = 0;
+    short gameState = 1;
     Hra2017::Game *gameLogic;
 };
 
