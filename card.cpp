@@ -14,10 +14,10 @@ MyCard::MyCard(QObject *parent) : QObject(parent)
     next = NULL;
 }
 
-void MyCard::setValue(int val)
+void MyCard::setValue(int color, int number)
 {
-    if (14 > val and val > 0) {
-        this->value = val;
+    if (14 > number and number > 0) {
+        this->value = number;
         this->movable = 1;
         /*QString myStr = new QString(":/img/Resources");
         switch (card.getColor()) {

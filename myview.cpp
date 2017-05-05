@@ -19,42 +19,54 @@ MyView::MyView()
     memset(foundation, 0, sizeof(MyCard*)*4);
     memset(button, 0, sizeof(MyButton*)*6);
 
-    /* init start and stop buttons */
-    button[0] = new MyButton(this);
-    button[0]->setURL(":/img/Resources/ngButton.png");
+    /* init buttons */
+    for (int i = 0; i < 5; i++) {
+        button[i] = new MyButton(this);
+        button[i]->setPos(10+70*i, (height()- 70));
+        scene->addItem(button[i]);
+    }
 
     button[5] = new MyButton(this);
     button[5]->setURL(":/img/Resources/addGamebutton.png");
     button[5]->setPos(560, (height()- 70));
     scene->addItem(button[5]);
 
-    button[0]->setPos(10, (height()- 70));
-    scene->addItem(button[0]);
-    connect(button[0], SIGNAL(buttonPressed()), this, SLOT(removeButtonPressed()));
-
-    //gameLogic = new Hra2017::Game();
-
-    for (int i = 1; i < 5; i++) {
-        button[i] = new MyButton(this);
-        button[i]->setPos(10+70*i, (height()- 70));
-        scene->addItem(button[i]);
-    }
-
+    button[0]->setURL(":/img/Resources/ngButton.png");
     button[1]->setURL(":/img/Resources/loadButton.png");
     button[2]->setURL(":/img/Resources/saveButton.png");
     button[3]->setURL(":/img/Resources/undoButton.png");
     button[4]->setURL(":/img/Resources/hintButton.png");
 
+    connect(button[0], SIGNAL(buttonPressed()), this, SLOT(removeButtonPressed()));
     connect(button[1], SIGNAL(buttonPressed()), this, SLOT(loadButtonPressed()));
     connect(button[2], SIGNAL(buttonPressed()), this, SLOT(saveButtonPressed()));
 
+    /* Hra2017::Game initialization */
+    gameLogic = new Hra2017::Game();
     startNewGame();
 }
 
 void MyView::loadGame()
 {
-    std::vector<Hra2017::CardInfo> info = gameLogic->getFoundation();
+/*    for (int i = 0; i < 4; i++) {
+        std::vector<Hra2017::CardInfo> info = gameLogic->getFoundation(i);
+        MyCard *temp = foundation[i];
+        for (unsigned int x = 0; x < info.size(); x++) {
+            MyCard *c = new MyCard();
+            c->setValue(info[x].color, info[x].number);
+            temp->next = c;
+            temp = c;
+        }
+    }
 
+    for (int z = 0; z < 7; z++) {
+        std::vector<Hra2017::CardInfo> info = gameLogic->getTableauPile(z);
+        MyCard *temp = pile[z];
+        for (unsigned int x = 0; x < info.size(); x++) {
+
+        }
+    }
+*/
 }
 
 void MyView::startNewGame()
@@ -63,8 +75,6 @@ void MyView::startNewGame()
         return;
     }
 
-
-
     float step = width() / 8;
     for (int z = 0; z < 7; z++)
     {
@@ -72,7 +82,7 @@ void MyView::startNewGame()
         pile[z]->setPos(step/2 + z*step, 100);
         MyCard *c = pile[z];
         MyCard *temp = NULL;
-        for (int i = 0; i < z; i++)
+        for (int i = 0; i <= z; i++)
         {
             c->prev = temp;
             c->next = new MyCard(this);
@@ -87,7 +97,7 @@ void MyView::startNewGame()
         scene->addItem(c);
         cards.append(c);
         c->setPos(step/2 + z*step, 100 + 20*z);
-        c->setValue(4);
+        c->setValue(4, 4);
     }
 
     for (int i = 0; i < 4; i++) {

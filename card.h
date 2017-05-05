@@ -13,7 +13,7 @@ class MyCard : public QObject, public QGraphicsPixmapItem
     Q_OBJECT
 public:
     explicit MyCard(QObject *parent = 0);
-    void setValue(int val);
+    void setValue(int color, int number);
     void moveMyCard(qreal vert, qreal hor);
     void setDrawOrder(int z);
 
