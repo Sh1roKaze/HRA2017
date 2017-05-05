@@ -1,6 +1,7 @@
 #include "card.h"
 
 #include <QDebug>
+#include <string>
 
 short lastX;
 short lastY;
@@ -14,22 +15,22 @@ MyCard::MyCard(QObject *parent) : QObject(parent)
     next = NULL;
 }
 
-void MyCard::setValue(int color, int number)
+void MyCard::setValue(int hidden, int color, int number)
 {
-    if (14 > number and number > 0) {
-        this->value = number;
-        this->movable = 1;
-        /*QString myStr = new QString(":/img/Resources");
-        switch (card.getColor()) {
-            case 0: myStr.append("hearts_"); break;
-            case 1: myStr.append("diamonds_"); break;
-            case 2: myStr.append("clubs_"); break;
-            case 3: myStr.append("spades_"); break;
+        QString *myStr = new QString(":/img/Resources/");
+        switch (color) {
+            case 0: myStr->append("hearts_"); break;
+            case 1: myStr->append("diamonds_"); break;
+            case 2: myStr->append("clubs_"); break;
+            case 3: myStr->append("spades_"); break;
         }
-        myStr.append(card.getNumber().toStr());
-        myStr.append(".png"); */
-        this->setPixmap(QPixmap(":/img/Resources/spades_A.png"));
-    }
+        myStr->append(QString::number(number));
+        myStr->append(".png");
+        qDebug() << *myStr;
+        face = new QPixmap(*myStr);
+        if (hidden) {
+            setPixmap(*face);
+        }
 }
 
 void MyCard::moveMyCard(qreal hor, qreal vert)

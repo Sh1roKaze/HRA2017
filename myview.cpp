@@ -43,39 +43,51 @@ MyView::MyView()
 
     /* Hra2017::Game initialization */
     gameLogic = new Hra2017::Game();
-    startNewGame();
+    loadGame();
+    //startNewGame();
 }
 
 void MyView::loadGame()
 {
-/*    for (int i = 0; i < 4; i++) {
-        std::vector<Hra2017::CardInfo> info = gameLogic->getFoundation(i);
+    for (int i = 0; i < 4; i++) {
+        foundation[i] = new MyCard(this);
+        foundation[i]->setPixmap(QPixmap(":/img/Resources/placementBorder.png"));
+        scene->addItem(foundation[i]);
+        std::vector<Hra2017::CardInfo> info = gameLogic->getFoundationPile(i);
         MyCard *temp = foundation[i];
         for (unsigned int x = 0; x < info.size(); x++) {
-            MyCard *c = new MyCard();
-            c->setValue(info[x].color, info[x].number);
+            MyCard *c = new MyCard(this);
+            c->setValue(info[x].hidden, info[x].color, info[x].number);
+            scene->addItem(c);
             temp->next = c;
             temp = c;
         }
     }
 
     for (int z = 0; z < 7; z++) {
+        pile[z] = new MyCard(this);
+        pile[z]->setPixmap(QPixmap(":/img/Resources/placementBorder.png"));
+        scene->addItem(pile[z]);
         std::vector<Hra2017::CardInfo> info = gameLogic->getTableauPile(z);
         MyCard *temp = pile[z];
         for (unsigned int x = 0; x < info.size(); x++) {
-            MyCard *c = new MyCard();
-            c->setValue(info[x].color, info[x].number);
+            MyCard *c = new MyCard(this);
+            qDebug() << info[x].hidden;
+            c->setValue(info[x].hidden, info[x].color, info[x].number);
+            scene->addItem(c);
             temp->next = c;
+            c->prev = temp;
             temp = c;
         }
     }
 
     std::vector<Hra2017::CardInfo> info = gameLogic->getWaste();
-    for (int i = 0; i < info.size(); i++) {
+    for (unsigned int i = 0; i < info.size(); i++) {
 
     }
-*/
-    layoutCards();
+
+    layoutCards(1);
+    gameState = 1;
 
 }
 
@@ -85,11 +97,9 @@ void MyView::startNewGame()
         return;
     }
 
-    float step = width() / 8;
     for (int z = 0; z < 7; z++)
     {
         pile[z] = new MyCard(this);
-        pile[z]->setPos(step/2 + z*step, 100);
         MyCard *c = pile[z];
         MyCard *temp = NULL;
         for (int i = 0; i <= z; i++)
@@ -105,7 +115,7 @@ void MyView::startNewGame()
         c->setZValue(z);
         scene->addItem(c);
         cards.append(c);
-        c->setValue(4, 4);
+        c->setValue(1, 4, 4);
     }
 
     for (int i = 0; i < 4; i++) {
@@ -114,7 +124,7 @@ void MyView::startNewGame()
         scene->addItem(foundation[i]);
     }
 
-    layoutCards();
+    layoutCards(1);
 
     gameState = 1;
 }
@@ -123,48 +133,48 @@ void MyView::resizeEvent(QResizeEvent *event)
 {
     if (-1 != event->oldSize().height())
     {
-        float a = event->size().height();
-        a = a/event->oldSize().height();
-        for (int i = 0; i < cards.count(); ++i) {
-            cards[i]->setScale(cards[i]->scale()*a);
-        }
-        for (int i = 0; i < 6; i++) {
-            button[i]->setScale(button[i]->scale()*a);
-        }
+        qreal a = event->size().height();
+        a /= event->oldSize().height();
+        layoutCards(a);
     }
 
     if (-1 != event->oldSize().width())
     {
-        layoutCards();
+        layoutCards(1);
     }
 }
 
-void MyView::layoutCards()
+void MyView::layoutCards(qreal scalingRatio)
 {
-    float stepW = this->width() / 8;
+    qreal stepW = (width() - width()*0.04) / 7;
+    qreal cardHeight = 243*pile[0]->scale()*scalingRatio + 15;
     for (int z = 0; z < 7; z++)
     {
-        if (pile[z] == NULL) { continue; }
-        pile[z]->setPos(stepW/2 + z*stepW, 100);
         int i = 0;
-        for (MyCard *c = pile[z]; c; i++, c = c->next)
-            c->setPos(stepW/2 + z*stepW, 100 + 20*i);
+        pile[z]->setPos(width()*0.02 + z*stepW, cardHeight);
+        pile[z]->setScale(pile[z]->scale()*scalingRatio);
+        for (MyCard *c = pile[z]->next; c; i++, c = c->next) {
+            c->setPos(width()*0.02 + z*stepW, cardHeight + 20*i);
+            c->setScale(c->scale()*scalingRatio);
+        }
     }
 
     for (int z = 0; z < 4; z++)
     {
-        if (foundation[z] == NULL) { continue; }
-        foundation[z]->setPos(stepW/2 + z*stepW, 100);
         int i = 0;
-        for (MyCard *c = foundation[z]; c; i++, c = c->next)
-            c->setPos(stepW/2 +3*stepW + z*stepW, 10);
+        for (MyCard *c = foundation[z]; c; i++, c = c->next) {
+            c->setPos(width()*0.02 +3*stepW + z*stepW, 10);
+            c->setScale(c->scale()*scalingRatio);
+        }
     }
 
-    qreal a = 300*button[0]->scale();
+    qreal buttonSize = 300*button[0]->scale();
     for (int z = 0; z < 5; z++) {
-        button[z]->setPos(stepW/2 + z*a + z*10, height() - a - 10);
+        button[z]->setPos(width()*0.02 + z*buttonSize + z*10, height() - buttonSize - height()*0.02);
+        button[z]->setScale(button[z]->scale()*scalingRatio);
     }
-    button[5]->setPos(width() - stepW/2 - a, height() - a - 10);
+    button[5]->setPos(width() - width()*0.02 - buttonSize, height() - buttonSize - height()*0.02);
+    button[5]->setScale(button[5]->scale()*scalingRatio);
 }
 
 MyButton *MyView::getButton5()
@@ -220,7 +230,7 @@ void MyView::resetGame()
         delete temp;
     }
 
-    for (int i = 2; i < 5; i++) {
+    for (int i = 0; i < 6; i++) {
         delete button[i];
     }
 

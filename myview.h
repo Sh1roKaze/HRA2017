@@ -19,7 +19,7 @@ public:
     void loadGame();
     void startNewGame();
     void resizeEvent(QResizeEvent *event);
-    void layoutCards();
+    void layoutCards(qreal scalingRatio);
     MyButton *getButton5();
     int getGameState();
 

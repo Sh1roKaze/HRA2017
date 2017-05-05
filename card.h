@@ -13,7 +13,7 @@ class MyCard : public QObject, public QGraphicsPixmapItem
     Q_OBJECT
 public:
     explicit MyCard(QObject *parent = 0);
-    void setValue(int color, int number);
+    void setValue(int hidden, int color, int number);
     void moveMyCard(qreal vert, qreal hor);
     void setDrawOrder(int z);
 
@@ -29,8 +29,11 @@ signals:
 public slots:
 
 private:
+    QPixmap *face;
+
     short value = 0;
     short followMouse = 0;
+    short faceUp = 0;
     short movable = 0;
 };
 
