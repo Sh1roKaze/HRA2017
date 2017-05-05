@@ -2,6 +2,7 @@
 // Objects representing state of game
 // xvlach16
 
+#include <ctime>
 #include <fstream>
 #include <cstdlib>
 #include "objects.h"
