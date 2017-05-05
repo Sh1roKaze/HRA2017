@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <cstdlib>
+#include <ctime>
 #include "objects.h"
 
 namespace Hra2017
