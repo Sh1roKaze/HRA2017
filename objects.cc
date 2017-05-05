@@ -3,6 +3,7 @@
 // xvlach16
 
 #include <fstream>
+#include <cstdlib>
 #include "objects.h"
 
 namespace Hra2017
@@ -205,6 +206,7 @@ namespace Hra2017
         for (int i = 0; i < 52; i++)
             pack.push_back(Card((CardNumber)(i % 13 + 1), (CardColor)(i / 13)));
 
+        srand(time(NULL));
         std::random_shuffle(pack.begin(), pack.end());
 
         unsigned i2 = 0;
