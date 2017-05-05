@@ -4,7 +4,6 @@
 
 #include <fstream>
 #include <cstdlib>
-#include <ctime>
 #include "objects.h"
 
 namespace Hra2017
@@ -175,7 +174,7 @@ namespace Hra2017
             CardInfo pileTopInfo = tableau[dstPileNumber]->getTopMost()->getCardInfo();
             if (c->getCardInfo().number != pileTopInfo.number - 1)
                 return 2; // BAD_NUMBER
-            if ((c->getCardInfo().color & 2) != (pileTopInfo.color & 2))
+            if ((c->getCardInfo().color & 2) == (pileTopInfo.color & 2))
                 return 3; // BAD_COLOR
         }
         
@@ -259,7 +258,7 @@ namespace Hra2017
 
         if (stock == nullptr)
         {
-            while(stock != nullptr)
+            while(waste != nullptr)
             {
                 Card *c = waste->getTopMost();
                 c->putCard(&stock);
