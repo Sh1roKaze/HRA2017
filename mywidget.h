@@ -23,7 +23,6 @@ public slots:
     void endGameButtonPressed();
 
 private:
-    short layoutSwitch = 0;
     short runningGames = 1;
 
     QWidget *widget0;

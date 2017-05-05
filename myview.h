@@ -19,6 +19,7 @@ public:
     void loadGame();
     void startNewGame();
     void resizeEvent(QResizeEvent *event);
+    void layoutCards();
     MyButton *getButton5();
     int getGameState();
 
@@ -39,6 +40,8 @@ private:
     QList <MyCard*> cards;
     MyCard *pile[7];
     MyCard *foundation[4];
+    MyCard *stock;
+    MyCard* waste;
     MyButton *button[6];
     short gameState = 0;
     Hra2017::Game *gameLogic;

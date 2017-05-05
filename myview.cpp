@@ -63,8 +63,16 @@ void MyView::loadGame()
         std::vector<Hra2017::CardInfo> info = gameLogic->getTableauPile(z);
         MyCard *temp = pile[z];
         for (unsigned int x = 0; x < info.size(); x++) {
-
+            MyCard *c = new MyCard();
+            c->setValue(info[x].color, info[x].number);
+            temp->next = c;
+            temp = c;
         }
+    }
+
+    std::vector<Hra2017::CardInfo> info = gameLogic->getWaste();
+    for (int i = 0; i < info.size(); i++) {
+
     }
 */
 }
@@ -140,6 +148,11 @@ void MyView::resizeEvent(QResizeEvent *event)
                 c->setPos(newStep/2 + z*newStep, 100 + 20*i);
         }
     }
+}
+
+void MyView::layoutCards()
+{
+
 }
 
 MyButton *MyView::getButton5()
