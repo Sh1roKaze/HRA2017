@@ -2,7 +2,6 @@
 // Objects representing state of game
 // xvlach16
 
-#include <ctime>
 #include <fstream>
 #include <cstdlib>
 #include "objects.h"
@@ -131,6 +130,11 @@ namespace Hra2017
 
     int Game::moveToFoundation(Card *c, int dstPileNumber)
     {
+        if (c == nullptr)
+            return 5; // CANNOT_MOVE_NULL
+        if (c->getCardInfo().hidden)
+            return 6; // CANNOT_MOVE_HIDDEN_CARD
+
         if (foundation[dstPileNumber] == nullptr)
         {
             if (c->getCardInfo().number != CardNumber::ace)
@@ -155,6 +159,11 @@ namespace Hra2017
 
     int Game::moveToTableau(Card *c, int dstPileNumber)
     {
+        if (c == nullptr)
+            return 5; // CANNOT_MOVE_NULL
+        if (c->getCardInfo().hidden)
+            return 6; // CANNOT_MOVE_HIDDEN_CARD
+
         if (tableau[dstPileNumber] == nullptr)
         {
             if (c->getCardInfo().number != CardNumber::king)
@@ -305,8 +314,6 @@ namespace Hra2017
             return 1; // SRC_EMPTY
 
         Card *c = tableau[srcPileNumber]->getNthFromTop(numberOfCards);
-        if (c == nullptr)
-            return 5; // NOT_ENOUGH_CARDS
 
         int ret = moveToTableau(c, dstPileNumber);
 
