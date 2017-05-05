@@ -83,7 +83,7 @@ namespace Hra2017
 
         void fillInfoVector(std::vector<CardInfo> &v);
 
-        char toChar();
+    	std::string pileToString();
     };
 
     class Game
@@ -94,11 +94,14 @@ namespace Hra2017
         Card* stock{nullptr};
         Card* waste{nullptr};
         Card* foundation[4]{nullptr};
-        Card* tableau[7];
+        Card* tableau[7]{nullptr};
         int score{0};
 
         int moveToFoundation(Card *c, int dstPileNumber);
         int moveToTableau(Card *c, int dstPileNumber);
+
+        void writePile(std::ofstream &output, Card *pile);
+    	void loadPile(std::ifstream &input, Card *pile);
 
      public:
         Game();
@@ -114,7 +117,7 @@ namespace Hra2017
         int getScore();
         bool isStockEmpty();
         CardInfo getWasteTop();
-        std::vector<CardInfo> getFoundation();
+        std::vector<CardInfo> getFoundationPile(int pileIndex);
         std::vector<CardInfo> getTableauPile(int pileIndex);
 
         bool undo();

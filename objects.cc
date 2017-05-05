@@ -2,6 +2,7 @@
 // Objects representing state of game
 // xvlach16
 
+#include <fstream>
 #include "objects.h"
 
 namespace Hra2017
@@ -115,10 +116,15 @@ namespace Hra2017
             onTop->fillInfoVector(v);
     }
 
-    char Card::toChar()
+    std::string Card::pileToString()
     {
-        // Turns all data in one byte
-        return (char)(this->info.number | (this->info.color << 4) | ((this->info.hidden ? 1 : 0) << 6));
+        std::string s;
+        s += (char)(this->info.number | (this->info.color << 4) | ((this->info.hidden ? 1 : 0) << 6));
+        
+        if (onTop != nullptr)
+            s += onTop->pileToString();
+
+        return s;
     }
 
     //=================================================================================================
@@ -170,6 +176,32 @@ namespace Hra2017
         return 0; //SUCCESS
     }
 
+    void Game::loadPile(std::ifstream &input, Card *pile)
+    {
+        int c;
+        while ((c = input.get()) != '\0')
+        {
+            if (c < 0)
+                throw "UNEXPECTED_EOF";
+
+            pack.push_back(Card(c));
+            pack.back().putCard(&pile);
+        }
+    }
+
+    void Game::writePile(std::ofstream &output, Card *pile)
+    {
+        std::string s = "";
+
+        if (pile != nullptr)
+            s = pile->pileToString();
+
+        for (int i = 0; i < (int)s.length(); i++)
+            output.put(s[i]);
+
+        output.put('\0');
+    }
+
     Game::Game()
     {
         for (int i = 0; i < 52; i++)
@@ -189,10 +221,26 @@ namespace Hra2017
             pack[i2++].putCard(&stock);
     }
 
-    /*Game::Game(std::string filename)
+    Game::Game(std::string filename)
     {
+        std::ifstream input(filename, std::ios::in | std::ios::binary);
 
-    }*/
+        score = input.get() << 8;
+        score |= input.get();
+        if (score < 0)
+            throw "UNEXPECTED_EOF";
+
+        loadPile(input, stock);
+        loadPile(input, waste);
+
+        for(int i = 0; i < 4; i++)
+            loadPile(input, foundation[i]);
+
+        for (int i = 0; i < 7; i++)
+            loadPile(input, tableau[i]);
+
+        input.close();
+    }
 
     void Game::turnNewCard()
     {
@@ -311,21 +359,24 @@ namespace Hra2017
         return info;
     }
 
-    std::vector<CardInfo> Game::getFoundation()
+    std::vector<CardInfo> Game::getFoundationPile(int pileIndex)
     {
+        if (pileIndex < 0 || pileIndex > 3)
+            throw "INDEX_OUT_OF_RANGE";
+
         std::vector<CardInfo> infos;
 
-        for (int i = 0; i < 4; i++)
-            if (foundation[i] != nullptr)
-                infos.push_back(foundation[i]->getTopMost()->getCardInfo());
-            else
-                infos.push_back(CardInfo());
+        if (foundation[pileIndex] != nullptr)
+            foundation[pileIndex]->fillInfoVector(infos);
 
         return infos;
     }
 
     std::vector<CardInfo> Game::getTableauPile(int pileIndex)
     {
+        if (pileIndex < 0 || pileIndex > 7)
+            throw "INDEX_OUT_OF_RANGE";
+
         std::vector<CardInfo> infos;
 
         if (tableau[pileIndex] != nullptr)
@@ -367,8 +418,22 @@ namespace Hra2017
         return true;
     }
 
-    /*void saveGame(std::string filename)
+    void Game::saveGame(std::string filename)
     {
+        std::ofstream output(filename, std::ios::out | std::ios::binary);
 
-    }*/
+        output.put((char)(score >> 8));
+        output.put((char)(score & 255));
+
+        writePile(output, stock);
+        writePile(output, waste);
+
+        for(int i = 0; i < 4; i++)
+            writePile(output, foundation[i]);
+
+        for (int i = 0; i < 7; i++)
+            writePile(output, tableau[i]);
+        
+        output.close();
+    }
 }
