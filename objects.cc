@@ -310,6 +310,8 @@ namespace Hra2017
 
     int Game::moveFromTableauToTableau(int srcPileNumber, int dstPileNumber, int numberOfCards)
     {
+        if (numberOfCards <= 0)
+            return 7; // NUMBER_NOT_POSITIVE
         if (tableau[srcPileNumber] == nullptr)
             return 1; // SRC_EMPTY
 
