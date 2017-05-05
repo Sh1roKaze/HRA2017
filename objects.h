@@ -63,7 +63,7 @@ namespace Hra2017
      public:
         Card(CardNumber n, CardColor c);
 
-        Card(char data);
+        Card(unsigned char data);
 
         bool isTopMost();
 
@@ -116,7 +116,7 @@ namespace Hra2017
 
         int getScore();
         bool isStockEmpty();
-        CardInfo getWasteTop();
+        std::vector<CardInfo> getWaste();
         std::vector<CardInfo> getFoundationPile(int pileIndex);
         std::vector<CardInfo> getTableauPile(int pileIndex);
 
