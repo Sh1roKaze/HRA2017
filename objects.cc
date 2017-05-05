@@ -11,7 +11,7 @@ namespace Hra2017
     {
         info.number = n;
         info.color = c;
-        info.hidden = false;
+        info.hidden = true;
     }
 
     Card::Card(unsigned char data)
