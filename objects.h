@@ -107,7 +107,7 @@ namespace Hra2017
         Game();
         Game(std::string filename);
 
-        void turnNewCard();
+        CardInfo turnNewCard();
         int moveFromWasteToTableau(int dstPileNumber);
         int moveFromFoundationToTableau(int srcPileNumber, int dstPileNumber);
         int moveFromTableauToTableau(int srcPileNumber, int dstPileNumber, int numberOfCards);

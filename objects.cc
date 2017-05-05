@@ -240,7 +240,7 @@ namespace Hra2017
         input.close();
     }
 
-    void Game::turnNewCard()
+    CardInfo Game::turnNewCard()
     {
         history.push({nullptr, nullptr, score});
 
@@ -254,12 +254,15 @@ namespace Hra2017
             }
 
             score -= score < 100 ? score : 100;
+            return CardInfo();
         }
         else
         {
             Card *c = stock->getTopMost();
             c->putCard(&waste);
             c->unhide();
+
+            return c->getCardInfo();
         }
     }
 
