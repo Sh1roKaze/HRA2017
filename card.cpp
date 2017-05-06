@@ -170,6 +170,7 @@ void MyCard::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                 } else {
                     moveMyCard((lastX - x())/this->scale(), (lastY - y())/this->scale());
                 }
+                ((MyView*) this->parent())->layoutCards(1);
             }
         }
     }

@@ -31,6 +31,8 @@ public slots:
     void loadSelected(QString);
     void saveButtonPressed();
     void saveSelected(QString);
+    void undoButtonPressed();
+    void hintButtonPressed();
     void stockToFoundation();
 
 signals:

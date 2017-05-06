@@ -40,6 +40,7 @@ MyView::MyView()
     connect(button[0], SIGNAL(buttonPressed()), this, SLOT(removeButtonPressed()));
     connect(button[1], SIGNAL(buttonPressed()), this, SLOT(loadButtonPressed()));
     connect(button[2], SIGNAL(buttonPressed()), this, SLOT(saveButtonPressed()));
+    connect(button[3], SIGNAL(buttonPressed()), this, SLOT(undoButtonPressed()));
 
     stock = new MyButton(this);
     stock->setURL(":/img/Resources/Cover.png");
@@ -205,7 +206,10 @@ void MyView::loadSelected(QString a)
 {
     Hra2017::Game *temp = NULL;
     try {
-        throw temp = new Hra2017::Game(a.toStdString());
+        temp = new Hra2017::Game(a.toStdString());
+        if (temp == NULL) {
+            throw 20;
+        }
     }
     catch (int e) {
         return;
@@ -230,6 +234,19 @@ void MyView::saveSelected(QString a)
     gameLogic->saveGame(a.toStdString());
 }
 
+void MyView::undoButtonPressed()
+{
+    if (gameLogic->undo()) {
+        resetGame();
+        loadGame();
+    }
+}
+
+void MyView::hintButtonPressed()
+{
+    //
+}
+
 void MyView::stockToFoundation()
 {
     if (!gameLogic->isStockEmpty()) {
@@ -247,14 +264,15 @@ void MyView::stockToFoundation()
         }
     } else {
         stock->setPixmap(QPixmap(":/img/Resources/Cover.png"));
-
-        MyCard *temp = waste->next;
-        for (MyCard *c = temp->next; c; c = c->next) {
+        if (waste->next != NULL) {
+            MyCard *temp = waste->next;
+            for (MyCard *c = temp->next; c; c = c->next) {
+                delete temp;
+                temp = c;
+            }
             delete temp;
-            temp = c;
+            waste->next = NULL;
         }
-        delete temp;
-        waste->next = NULL;
         gameLogic->turnNewCard();
     }
     layoutCards(1);
