@@ -52,7 +52,8 @@ SOURCES       = main.cpp \
 		mywidget.cpp \
 		myview.cpp \
 		card.cpp \
-		mybutton.cpp qrc_res.cpp \
+		mybutton.cpp \
+		objects.cc qrc_res.cpp \
 		moc_mywidget.cpp \
 		moc_myview.cpp \
 		moc_card.cpp \
@@ -62,6 +63,7 @@ OBJECTS       = main.o \
 		myview.o \
 		card.o \
 		mybutton.o \
+		objects.o \
 		qrc_res.o \
 		moc_mywidget.o \
 		moc_myview.o \
@@ -204,11 +206,13 @@ DIST          = /Qt5.5.1/5.5/gcc_64/mkspecs/features/spec_pre.prf \
 		HRA2017.pro mywidget.h \
 		myview.h \
 		card.h \
-		mybutton.h main.cpp \
+		mybutton.h \
+		objects.h main.cpp \
 		mywidget.cpp \
 		myview.cpp \
 		card.cpp \
-		mybutton.cpp
+		mybutton.cpp \
+		objects.cc
 QMAKE_TARGET  = HRA2017
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = HRA2017
@@ -533,8 +537,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents res.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents mywidget.h myview.h card.h mybutton.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mywidget.cpp myview.cpp card.cpp mybutton.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mywidget.h myview.h card.h mybutton.h objects.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp mywidget.cpp myview.cpp card.cpp mybutton.cpp objects.cc $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -563,7 +567,6 @@ qrc_res.cpp: res.qrc \
 		Resources/clubs_9.png \
 		Resources/hearts_10.png \
 		Resources/hearts_1.png \
-		Resources/diamonds_8v2.png \
 		Resources/placementBorder.png \
 		Resources/diamonds_10.png \
 		Resources/diamonds_6.png \
@@ -597,6 +600,7 @@ qrc_res.cpp: res.qrc \
 		Resources/diamonds_1.png \
 		Resources/loadButton.png \
 		Resources/clubs_3.png \
+		Resources/background.png \
 		Resources/spades_4.png \
 		Resources/clubs_12.png \
 		Resources/hearts_4.png \
@@ -620,13 +624,15 @@ qrc_res.cpp: res.qrc \
 		Resources/hearts_11.png \
 		Resources/saveButton.png \
 		Resources/diamonds_11.png \
-		Resources/spades_1.png
+		Resources/spades_1.png \
+		Resources/diamonds_7.png
 	/Qt5.5.1/5.5/gcc_64/bin/rcc -name res res.qrc -o qrc_res.cpp
 
 compiler_moc_header_make_all: moc_mywidget.cpp moc_myview.cpp moc_card.cpp moc_mybutton.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mywidget.cpp moc_myview.cpp moc_card.cpp moc_mybutton.cpp
 moc_mywidget.cpp: card.h \
+		objects.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/QObject \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qobject.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectdefs.h \
@@ -765,6 +771,7 @@ moc_mywidget.cpp: card.h \
 	/Qt5.5.1/5.5/gcc_64/bin/moc $(DEFINES) -I/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++ -I/home/shirokaze/HRA2017Linux/HRA2017 -I/Qt5.5.1/5.5/gcc_64/include -I/Qt5.5.1/5.5/gcc_64/include/QtWidgets -I/Qt5.5.1/5.5/gcc_64/include/QtGui -I/Qt5.5.1/5.5/gcc_64/include/QtCore mywidget.h -o moc_mywidget.cpp
 
 moc_myview.cpp: card.h \
+		objects.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/QObject \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qobject.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectdefs.h \
@@ -856,6 +863,7 @@ moc_myview.cpp: card.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QGraphicsPixmapItem \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QGraphicsSceneMouseEvent \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicssceneevent.h \
+		myview.h \
 		mybutton.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QLabel \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlabel.h \
@@ -893,7 +901,8 @@ moc_myview.cpp: card.h \
 		myview.h
 	/Qt5.5.1/5.5/gcc_64/bin/moc $(DEFINES) -I/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++ -I/home/shirokaze/HRA2017Linux/HRA2017 -I/Qt5.5.1/5.5/gcc_64/include -I/Qt5.5.1/5.5/gcc_64/include/QtWidgets -I/Qt5.5.1/5.5/gcc_64/include/QtGui -I/Qt5.5.1/5.5/gcc_64/include/QtCore myview.h -o moc_myview.cpp
 
-moc_card.cpp: /Qt5.5.1/5.5/gcc_64/include/QtCore/QObject \
+moc_card.cpp: objects.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtCore/QObject \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qobject.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectdefs.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qnamespace.h \
@@ -984,6 +993,42 @@ moc_card.cpp: /Qt5.5.1/5.5/gcc_64/include/QtCore/QObject \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QGraphicsPixmapItem \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QGraphicsSceneMouseEvent \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicssceneevent.h \
+		myview.h \
+		card.h \
+		mybutton.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QLabel \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlabel.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qframe.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qwidget.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qpalette.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qbrush.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qfont.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qfontmetrics.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qfontinfo.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qcursor.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qkeysequence.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qevent.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtCore/qurl.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtCore/qurlquery.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtCore/qfile.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtCore/qfiledevice.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qvector2d.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qtouchdevice.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/QResizeEvent \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QGraphicsView \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsview.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qpainter.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextoption.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qpen.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qscrollarea.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsscene.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QFileDialog \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qfiledialog.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtCore/qdir.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtCore/qfileinfo.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdialog.h \
 		card.h
 	/Qt5.5.1/5.5/gcc_64/bin/moc $(DEFINES) -I/Qt5.5.1/5.5/gcc_64/mkspecs/linux-g++ -I/home/shirokaze/HRA2017Linux/HRA2017 -I/Qt5.5.1/5.5/gcc_64/include -I/Qt5.5.1/5.5/gcc_64/include/QtWidgets -I/Qt5.5.1/5.5/gcc_64/include/QtGui -I/Qt5.5.1/5.5/gcc_64/include/QtCore card.h -o moc_card.cpp
 
@@ -1096,6 +1141,7 @@ compiler_clean: compiler_rcc_clean compiler_moc_header_clean
 ####### Compile
 
 main.o: main.cpp card.h \
+		objects.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/QObject \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qobject.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectdefs.h \
@@ -1187,7 +1233,6 @@ main.o: main.cpp card.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QGraphicsPixmapItem \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QGraphicsSceneMouseEvent \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicssceneevent.h \
-		mywidget.h \
 		myview.h \
 		mybutton.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QLabel \
@@ -1223,6 +1268,7 @@ main.o: main.cpp card.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qdir.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qfileinfo.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdialog.h \
+		mywidget.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QHBoxLayout \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qboxlayout.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlayout.h \
@@ -1248,6 +1294,7 @@ main.o: main.cpp card.h \
 
 mywidget.o: mywidget.cpp mywidget.h \
 		card.h \
+		objects.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/QObject \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qobject.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectdefs.h \
@@ -1387,6 +1434,7 @@ mywidget.o: mywidget.cpp mywidget.h \
 
 myview.o: myview.cpp myview.h \
 		card.h \
+		objects.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/QObject \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qobject.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectdefs.h \
@@ -1516,6 +1564,7 @@ myview.o: myview.cpp myview.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o myview.o myview.cpp
 
 card.o: card.cpp card.h \
+		objects.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/QObject \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qobject.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/qobjectdefs.h \
@@ -1607,6 +1656,41 @@ card.o: card.cpp card.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QGraphicsPixmapItem \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QGraphicsSceneMouseEvent \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicssceneevent.h \
+		myview.h \
+		mybutton.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QLabel \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qlabel.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qframe.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qwidget.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qpalette.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qbrush.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qfont.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qfontmetrics.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qfontinfo.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qsizepolicy.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qcursor.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qkeysequence.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qevent.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtCore/qurl.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtCore/qurlquery.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtCore/qfile.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtCore/qfiledevice.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qvector2d.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qtouchdevice.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/QResizeEvent \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QGraphicsView \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsview.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qpainter.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qtextoption.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtGui/qpen.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qscrollarea.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qabstractscrollarea.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicsscene.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QFileDialog \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qfiledialog.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtCore/qdir.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtCore/qfileinfo.h \
+		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qdialog.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtCore/QDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o card.o card.cpp
 
@@ -1703,6 +1787,9 @@ mybutton.o: mybutton.cpp mybutton.h \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/QGraphicsSceneMouseEvent \
 		/Qt5.5.1/5.5/gcc_64/include/QtWidgets/qgraphicssceneevent.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mybutton.o mybutton.cpp
+
+objects.o: objects.cc objects.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o objects.o objects.cc
 
 qrc_res.o: qrc_res.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_res.o qrc_res.cpp
