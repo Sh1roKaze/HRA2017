@@ -221,7 +221,7 @@ void MyView::stockToFoundation()
         Hra2017::CardInfo info = gameLogic->turnNewCard();
         MyCard *temp;
         for ( temp = waste; temp->next != NULL; temp = temp->next) {}
-        temp->next = new MyCard();
+        temp->next = new MyCard(0, this);
         temp->next->prev = temp;
         temp = temp->next;
         temp->setValue(info.hidden, info.color, info.number);
@@ -240,20 +240,14 @@ void MyView::stockToFoundation()
         }
         delete temp;
         waste->next = NULL;
-        /*
-        Hra2017::CardInfo info = gameLogic->turnNewCard();
-        waste = new MyCard();
-        waste->next->prev = waste;
-        qDebug() << info.hidden << info.color << info.number;
-        waste->next->setValue(info.hidden, info.color, info.number);
-        scene->addItem(temp);
-        */
+        gameLogic->turnNewCard();
     }
     layoutCards(1);
 }
 
 void MyView::resetGame()
 {
+    /* free piles */
     for (int z = 0; z < 7; z++) {
         MyCard *temp = pile[z];
         for (MyCard *c = temp->next; c; c = c->next) {
@@ -263,10 +257,12 @@ void MyView::resetGame()
         delete temp;
     }
 
+    /* free buttons */
     for (int i = 0; i < 6; i++) {
         delete button[i];
     }
 
+    /* free foundation */
     for (int z = 0; z < 4; z++) {
         MyCard *temp = foundation[z];
         for (MyCard *c = temp->next; c; c = c->next) {
@@ -276,6 +272,7 @@ void MyView::resetGame()
         delete temp;
     }
 
+    /* free waste */
     MyCard *temp = waste;
     for (MyCard *c = temp->next; c; c = c->next) {
         delete temp;
@@ -283,6 +280,7 @@ void MyView::resetGame()
     }
     delete temp;
 
+    /* free stock button */
     delete stock;
 
 }

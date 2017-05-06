@@ -17,6 +17,7 @@ public:
     void setValue(int hidden, int color, int number);
     void turnCard();
     int getColumn();
+    void setColumn(int target);
     int isValidMove(int source, int target, int count);
     void moveMyCard(qreal vert, qreal hor);
     void setDrawOrder(int z);

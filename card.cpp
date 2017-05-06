@@ -46,6 +46,13 @@ int MyCard::getColumn()
     return column;
 }
 
+void MyCard::setColumn(int target)
+{
+    column = target;
+    if (next != NULL)
+        next->setColumn(target);
+}
+
 int MyCard::isValidMove(int source, int target, int count)
 {
     MyView* thisView = (MyView*) this->parent();
@@ -108,7 +115,7 @@ void MyCard::mousePressEvent(QGraphicsSceneMouseEvent *event)
         lastY = pos().y();
     }
     if (event->button() == Qt::RightButton) {
-        this->movable = 1;
+        //this->movable = 1;
     }
 
 }
@@ -157,7 +164,8 @@ void MyCard::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                     while (temp->next != NULL)
                         temp = temp->next;
                     temp->next = this;
-
+                    prev = temp;
+                    setColumn(target);
                 } else {
                     moveMyCard((lastX - x())/this->scale(), (lastY - y())/this->scale());
                 }
