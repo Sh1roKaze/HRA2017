@@ -49,7 +49,6 @@ void myWidget::applyViewList()
         empty1->show();
         empty2->show();
     } else {
-        fourGameLayout->addWidget(viewList[0], 0, 0, 2, 2, 0);
         fourGameLayout->removeWidget(empty1);
         fourGameLayout->removeWidget(empty2);
         empty1->hide();
