@@ -151,7 +151,7 @@ void MyCard::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                 }
                 int a = isValidMove(column, target, count);
                 qDebug() << "RET: " << a;
-                if (0 == a) {
+                if (0 == a or a == 100 or a == -100) {
                     prev->next = NULL;
                     if (prev->prev != NULL) {
                         prev->turnCard();
@@ -162,6 +162,12 @@ void MyCard::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                     temp->next = this;
                     prev = temp;
                     setColumn(target);
+                    if (a == 100) {
+                        //YOU WIN
+                    }
+                    if (a == -100) {
+                        //YOU LOSE
+                    }
                 } else {
                     moveMyCard((lastX - x())/this->scale(), (lastY - y())/this->scale());
                 }

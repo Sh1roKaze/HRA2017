@@ -257,6 +257,7 @@ void MyView::stockToFoundation()
         MyCard *temp;
         for ( temp = waste; temp->next != NULL; temp = temp->next) {}
         temp->next = new MyCard(0, this);
+        temp->next->setScale(temp->scale());
         temp->next->prev = temp;
         temp = temp->next;
         temp->setValue(info.hidden, info.color, info.number);
