@@ -3,7 +3,9 @@
 // xvlach16
 
 #include <fstream>
+#include <iostream>
 #include <cstdlib>
+#include <ctime>
 #include "objects.h"
 
 namespace Hra2017
@@ -21,7 +23,7 @@ namespace Hra2017
         int col = (data & 48) >> 4;
         bool hid = ((data & 64) >> 6) == 1;
 
-        if (num < 1 || num > 13 || col < 0 || col > 3 || data > 127)
+        if (num < 0 || num > 13 || col < 0 || col > 3 || data > 127)
             throw "BAD_DATA";
 
         info.number = (CardNumber)num;
@@ -185,17 +187,16 @@ namespace Hra2017
         return 0; //SUCCESS
     }
 
-    void Game::loadPile(std::ifstream &input, Card **pile)
+    void Game::loadPile(int &i, int size, Card **pile)
     {
-        int c;
-        while ((c = input.get()) != '\0')
+        while (++i < size)
         {
-            if (c < 0)
-                throw "UNEXPECTED_EOF";
-
-            pack.push_back(Card(c));
-            pack.back().putCard(pile);
+            if (pack[i].getCardInfo().number != CardNumber::none)
+                pack[i].putCard(pile);
+            else
+                return;
         }
+        throw "MISSING_DATA";
     }
 
     void Game::writePile(std::ofstream &output, Card *pile)
@@ -238,18 +239,23 @@ namespace Hra2017
         score = input.get() << 8;
         score |= input.get();
         if (score < 0)
-            throw "UNEXPECTED_EOF";
+            throw "MISSING_DATA";
 
-        loadPile(input, &stock);
-        loadPile(input, &waste);
-
-        for(int i = 0; i < 4; i++)
-            loadPile(input, &foundation[i]);
-
-        for (int i = 0; i < 7; i++)
-            loadPile(input, &tableau[i]);
+        int c;
+        while ((c = input.get()) >= 0)
+            pack.push_back(Card(c));
 
         input.close();
+
+        int idx{-1};
+        loadPile(idx, pack.size(), &stock);
+        loadPile(idx, pack.size(), &waste);
+
+        for(int i = 0; i < 4; i++)
+            loadPile(idx, pack.size(), &foundation[i]);
+
+        for (int i = 0; i < 7; i++)
+            loadPile(idx, pack.size(), &tableau[i]);
     }
 
     CardInfo Game::turnNewCard()

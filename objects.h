@@ -102,7 +102,7 @@ namespace Hra2017
         int moveToTableau(Card *c, int dstPileNumber);
 
         void writePile(std::ofstream &output, Card *pile);
-    	void loadPile(std::ifstream &input, Card **pile);
+    	void loadPile(int &i, int size, Card **pile);
 
      public:
         Game();
