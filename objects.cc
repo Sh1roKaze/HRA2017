@@ -2,7 +2,6 @@
 // Objects representing state of game
 // xvlach16
 
-#include <ctime>
 #include <fstream>
 #include <cstdlib>
 #include "objects.h"
@@ -186,7 +185,7 @@ namespace Hra2017
         return 0; //SUCCESS
     }
 
-    void Game::loadPile(std::ifstream &input, Card *pile)
+    void Game::loadPile(std::ifstream &input, Card **pile)
     {
         int c;
         while ((c = input.get()) != '\0')
@@ -195,7 +194,7 @@ namespace Hra2017
                 throw "UNEXPECTED_EOF";
 
             pack.push_back(Card(c));
-            pack.back().putCard(&pile);
+            pack.back().putCard(pile);
         }
     }
 
@@ -241,23 +240,30 @@ namespace Hra2017
         if (score < 0)
             throw "UNEXPECTED_EOF";
 
-        loadPile(input, stock);
-        loadPile(input, waste);
+        loadPile(input, &stock);
+        loadPile(input, &waste);
 
         for(int i = 0; i < 4; i++)
-            loadPile(input, foundation[i]);
+            loadPile(input, &foundation[i]);
 
         for (int i = 0; i < 7; i++)
-            loadPile(input, tableau[i]);
+            loadPile(input, &tableau[i]);
 
         input.close();
     }
 
     CardInfo Game::turnNewCard()
     {
-        history.push({nullptr, nullptr, score});
+        if (stock != nullptr)
+        {
+            Card *c = stock->getTopMost();
+            c->putCard(&waste);
+            c->unhide();
 
-        if (stock == nullptr)
+            history.push({nullptr, nullptr, score});
+            return c->getCardInfo();
+        }
+        else if (waste != nullptr) 
         {
             while(waste != nullptr)
             {
@@ -266,17 +272,12 @@ namespace Hra2017
                 c->hide();
             }
 
+            history.push({nullptr, nullptr, score});
             score -= score < 100 ? score : 100;
             return CardInfo();
         }
-        else
-        {
-            Card *c = stock->getTopMost();
-            c->putCard(&waste);
-            c->unhide();
 
-            return c->getCardInfo();
-        }
+        return CardInfo();
     }
 
     int Game::moveFromWasteToTableau(int dstPileNumber)
@@ -326,6 +327,7 @@ namespace Hra2017
             if (c->getCardInfo().hidden)
             {
                 c->unhide();
+                history.push({c, nullptr, 0});
                 score += 5;
             }
         }
@@ -350,7 +352,20 @@ namespace Hra2017
 
         Card *c = tableau[srcPileNumber]->getTopMost();
 
-        return moveToFoundation(c, dstPileNumber);
+        int ret = moveToFoundation(c, dstPileNumber);
+
+        if (ret == 0 && tableau[srcPileNumber] != nullptr)
+        {
+            c = tableau[srcPileNumber]->getTopMost();
+            if (c->getCardInfo().hidden)
+            {
+                c->unhide();
+                history.push({c, nullptr, 0});
+                score += 5;
+            }
+        }
+
+        return ret;
     }
 
     int Game::getScore()
@@ -408,6 +423,13 @@ namespace Hra2017
 
         Move move = history.top();
         history.pop();
+
+        if (move.from == nullptr)
+        {
+            move.card->hide();
+            move = history.top();
+            history.pop();
+        }
 
         if (move.card == nullptr)
         {
