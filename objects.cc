@@ -156,6 +156,15 @@ namespace Hra2017
         history.push(move);
         score += 10;
 
+        if (c->getCardInfo().number == CardNumber::king)
+        {
+            for (int i = 0; i < 4; i++)
+                if (foundation[i] == nullptr || foundation[i]->getTopMost()->getCardInfo().number != CardNumber::king)
+                    return 0; //SUCCESS
+
+            return 100; // VICTORY
+        }
+
         return 0; //SUCCESS
     }
 
@@ -429,14 +438,7 @@ namespace Hra2017
 
         Move move = history.top();
         history.pop();
-
-        if (move.from == nullptr)
-        {
-            move.card->hide();
-            move = history.top();
-            history.pop();
-        }
-
+        
         if (move.card == nullptr)
         {
             if (waste == nullptr)
@@ -456,7 +458,16 @@ namespace Hra2017
             }
         }
         else
+        {
+            if (move.from == nullptr)
+            {
+                move.card->hide();
+                move = history.top();
+                history.pop();
+            }
+
             move.card->putCard(move.from);
+        }
 
         score = move.score;
         return true;
