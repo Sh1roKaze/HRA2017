@@ -136,6 +136,7 @@ void MyView::layoutCards(qreal scalingRatio)
         for (MyCard *c = pile[z]->next; c; i++, c = c->next) {
             c->setPos(width()*0.02 + z*stepW, cardHeight + 20*i);
             c->setScale(c->scale()*scalingRatio);
+            c->setZValue(i+1);
         }
     }
 
@@ -145,6 +146,7 @@ void MyView::layoutCards(qreal scalingRatio)
         for (MyCard *c = foundation[z]; c; i++, c = c->next) {
             c->setPos(width()*0.02 +3*stepW + z*stepW, height()*0.02);
             c->setScale(c->scale()*scalingRatio);
+            c->setZValue(i+1);
         }
     }
 
@@ -199,6 +201,17 @@ void MyView::loadButtonPressed()
 
 void MyView::loadSelected(QString a)
 {
+    Hra2017::Game *temp = NULL;
+    try {
+        throw temp = new Hra2017::Game(a.toStdString());
+    }
+    catch (int e) {
+        return;
+    }
+    resetGame();
+    delete gameLogic;
+    gameLogic = temp;
+    loadGame();
     qDebug() << a;
 }
 
@@ -207,12 +220,12 @@ void MyView::saveButtonPressed()
     QFileDialog *dialog = new QFileDialog(this);
     dialog->show();
     connect(dialog, SIGNAL(fileSelected(QString)), this, SLOT(saveSelected(QString)));
-
 }
 
 void MyView::saveSelected(QString a)
 {
     qDebug() << a;
+    gameLogic->saveGame(a.toStdString());
 }
 
 void MyView::stockToFoundation()

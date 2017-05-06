@@ -156,10 +156,11 @@ void MyCard::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                 int a = isValidMove(column, target, count);
                 qDebug() << "RET: " << a;
                 if (0 == a) {
-                    //connectMyCard();
                     qDebug() << "Valid move";
                     prev->next = NULL;
-                    prev->turnCard();
+                    if (prev->prev != NULL) {
+                        prev->turnCard();
+                    }
                     MyCard *temp = (MyCard*) list.last();
                     while (temp->next != NULL)
                         temp = temp->next;
