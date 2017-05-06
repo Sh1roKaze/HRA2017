@@ -18,7 +18,6 @@ class MyView : public QGraphicsView
 public:
     MyView();
     void loadGame();
-    void startNewGame();
     void resizeEvent(QResizeEvent *event);
     void layoutCards(qreal scalingRatio);
     MyButton *getButton5();

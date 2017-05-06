@@ -83,7 +83,7 @@ int MyCard::isValidMove(int source, int target, int count)
     if (source < 12) {
         if (target < 8) {
             qDebug() << "Found to tableu" << source-8 << target-1;
-            hra->moveFromFoundationToTableau(source - 8, target - 1);
+            return hra->moveFromFoundationToTableau(source - 8, target - 1);
         }
         return 1;
     }

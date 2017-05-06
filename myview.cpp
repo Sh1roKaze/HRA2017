@@ -52,7 +52,6 @@ MyView::MyView()
     /* Hra2017::Game initialization */
     gameLogic = new Hra2017::Game();
     loadGame();
-    //startNewGame();
 }
 
 void MyView::loadGame()
@@ -69,6 +68,7 @@ void MyView::loadGame()
             c->setValue(info[x].hidden, info[x].color, info[x].number);
             scene->addItem(c);
             temp->next = c;
+            c->prev = temp;
             temp = c;
         }
     }
@@ -106,11 +106,6 @@ void MyView::loadGame()
     }
 
     layoutCards(1);
-
-}
-
-void MyView::startNewGame()
-{
 
 }
 
@@ -240,9 +235,13 @@ void MyView::saveSelected(QString a)
 
 void MyView::undoButtonPressed()
 {
+    qDebug() << "pressed: ";
     if (gameLogic->undo()) {
-        resetGame();
+        qDebug() << "UNDO";
+        softResetGame();
         loadGame();
+    } else {
+        qDebug() << "No Undo";
     }
 }
 
