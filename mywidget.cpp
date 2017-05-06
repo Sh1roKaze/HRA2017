@@ -6,7 +6,7 @@ myWidget::myWidget()
 {
     /* layout init */
     viewList.append(new MyView());
-    connect(viewList[0]->getButton5(), SIGNAL(buttonPressed()), this, SLOT(addGameButtonPressed()));
+    //connect(viewList[0]->getButton5(), SIGNAL(buttonPressed()), this, SLOT(addGameButtonPressed()));
     connect(viewList[0], SIGNAL(stopButtonPressed()), this, SLOT(endGameButtonPressed()));
 
     empty1 = new QGraphicsView();

@@ -48,6 +48,7 @@ MyView::MyView()
     scene->addItem(stock);
     connect(stock, SIGNAL(buttonPressed()), this, SLOT(stockToFoundation()));
 
+
     /* Hra2017::Game initialization */
     gameLogic = new Hra2017::Game();
     loadGame();
@@ -56,6 +57,7 @@ MyView::MyView()
 
 void MyView::loadGame()
 {
+    /* load foundation */
     for (int i = 0; i < 4; i++) {
         foundation[i] = new MyCard(8 + i, this);
         foundation[i]->setPixmap(QPixmap(":/img/Resources/placementBorder.png"));
@@ -71,6 +73,7 @@ void MyView::loadGame()
         }
     }
 
+    /* load piles */
     for (int z = 0; z < 7; z++) {
         pile[z] = new MyCard(1 + z, this);
         pile[z]->setPixmap(QPixmap(":/img/Resources/placementBorder.png"));
@@ -87,6 +90,7 @@ void MyView::loadGame()
         }
     }
 
+    /* load waste */
     waste = new MyCard(0, this);
     waste->setPixmap(QPixmap(":/img/Resources/placementBorder.png"));
     scene->addItem(waste);
@@ -214,7 +218,7 @@ void MyView::loadSelected(QString a)
     catch (int e) {
         return;
     }
-    resetGame();
+    softResetGame();
     delete gameLogic;
     gameLogic = temp;
     loadGame();
@@ -276,6 +280,37 @@ void MyView::stockToFoundation()
         gameLogic->turnNewCard();
     }
     layoutCards(1);
+}
+
+void MyView::softResetGame()
+{
+    /* free piles */
+    for (int z = 0; z < 7; z++) {
+        MyCard *temp = pile[z];
+        for (MyCard *c = temp->next; c; c = c->next) {
+            delete temp;
+            temp = c;
+        }
+        delete temp;
+    }
+
+    /* free foundation */
+    for (int z = 0; z < 4; z++) {
+        MyCard *temp = foundation[z];
+        for (MyCard *c = temp->next; c; c = c->next) {
+            delete temp;
+            temp = c;
+        }
+        delete temp;
+    }
+
+    /* free waste */
+    MyCard *temp = waste;
+    for (MyCard *c = temp->next; c; c = c->next) {
+        delete temp;
+        temp = c;
+    }
+    delete temp;
 }
 
 void MyView::resetGame()

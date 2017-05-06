@@ -39,6 +39,7 @@ signals:
     void stopButtonPressed();
 
 private:
+    void softResetGame();
     void resetGame();
 
     QGraphicsScene *scene;

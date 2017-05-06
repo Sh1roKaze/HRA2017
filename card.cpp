@@ -114,10 +114,6 @@ void MyCard::mousePressEvent(QGraphicsSceneMouseEvent *event)
         lastX = pos().x();
         lastY = pos().y();
     }
-    if (event->button() == Qt::RightButton) {
-        //this->movable = 1;
-    }
-
 }
 
 void MyCard::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -156,7 +152,6 @@ void MyCard::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                 int a = isValidMove(column, target, count);
                 qDebug() << "RET: " << a;
                 if (0 == a) {
-                    qDebug() << "Valid move";
                     prev->next = NULL;
                     if (prev->prev != NULL) {
                         prev->turnCard();
