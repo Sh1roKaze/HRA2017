@@ -231,15 +231,23 @@ void MyView::stockToFoundation()
             stock->setPixmap(QPixmap(":/img/Resources/Joker.png"));
         }
     } else {
+        stock->setPixmap(QPixmap(":/img/Resources/Cover.png"));
+
+        MyCard *temp = waste->next;
+        for (MyCard *c = temp->next; c; c = c->next) {
+            delete temp;
+            temp = c;
+        }
+        delete temp;
+        waste->next = NULL;
+        /*
         Hra2017::CardInfo info = gameLogic->turnNewCard();
-        MyCard *temp;
-        for ( temp = waste; temp->next != NULL; temp = temp->next) {}
-        temp->next = new MyCard();
-        temp->next->prev = temp;
-        temp = temp->next;
+        waste = new MyCard();
+        waste->next->prev = waste;
         qDebug() << info.hidden << info.color << info.number;
-        temp->setValue(info.hidden, info.color, info.number);
+        waste->next->setValue(info.hidden, info.color, info.number);
         scene->addItem(temp);
+        */
     }
     layoutCards(1);
 }
