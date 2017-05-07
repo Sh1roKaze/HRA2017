@@ -10,6 +10,7 @@
 #include <QResizeEvent>
 #include <QGraphicsView>
 #include <QFileDialog>
+#include <QMessageBox>
 
 class MyView : public QGraphicsView
 {
@@ -42,7 +43,6 @@ private:
     void resetGame();
 
     QGraphicsScene *scene;
-    QList <MyCard*> cards;
     MyCard *pile[7];
     MyCard *foundation[4];
     MyButton *stock;

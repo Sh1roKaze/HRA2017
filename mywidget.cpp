@@ -29,14 +29,22 @@ myWidget::myWidget()
 
 void myWidget::applyViewList()
 {
-    /* removes finished games */
+    /* find finished game */
+    int index = -1;
     for (int i = 0; i < viewList.length(); i++) {
         short gs = viewList[i]->getGameState();
         if (gs == 0) {
-                fourGameLayout->removeWidget(viewList[i]);
-                delete viewList[i];
-                viewList.removeAt(i);
+            index = i;
+            break;
         }
+    }
+
+    /* remove finished game */
+    if (index != -1) {
+        fourGameLayout->removeWidget(viewList[index]);
+        delete viewList[index];
+        viewList.removeAt(index);
+        qDebug() << "Removing view: " << index << "Length: " << viewList.length();
     }
 
     /* sets layout */

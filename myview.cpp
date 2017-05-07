@@ -22,7 +22,6 @@ MyView::MyView()
     /* init buttons */
     for (int i = 0; i < 5; i++) {
         button[i] = new MyButton(this);
-        //button[i]->setPos(10+70*i, (height()- 70));
         scene->addItem(button[i]);
     }
 
@@ -41,6 +40,7 @@ MyView::MyView()
     connect(button[1], SIGNAL(buttonPressed()), this, SLOT(loadButtonPressed()));
     connect(button[2], SIGNAL(buttonPressed()), this, SLOT(saveButtonPressed()));
     connect(button[3], SIGNAL(buttonPressed()), this, SLOT(undoButtonPressed()));
+    connect(button[4], SIGNAL(buttonPressed()), this, SLOT(hintButtonPressed()));
 
     stock = new MyButton(this);
     stock->setURL(":/img/Resources/Cover.png");
@@ -206,18 +206,14 @@ void MyView::loadSelected(QString a)
     Hra2017::Game *temp = NULL;
     try {
         temp = new Hra2017::Game(a.toStdString());
-        if (temp == NULL) {
-            throw 20;
-        }
     }
-    catch (int e) {
+    catch (const char *e) {
         return;
     }
     softResetGame();
     delete gameLogic;
     gameLogic = temp;
     loadGame();
-    qDebug() << a;
 }
 
 void MyView::saveButtonPressed()
@@ -229,25 +225,67 @@ void MyView::saveButtonPressed()
 
 void MyView::saveSelected(QString a)
 {
-    qDebug() << a;
     gameLogic->saveGame(a.toStdString());
 }
 
 void MyView::undoButtonPressed()
 {
-    qDebug() << "pressed: ";
     if (gameLogic->undo()) {
         qDebug() << "UNDO";
         softResetGame();
         loadGame();
-    } else {
-        qDebug() << "No Undo";
     }
 }
 
 void MyView::hintButtonPressed()
 {
-    //
+    static int i = 0;
+    if (i == 0) {
+        Hra2017::Hint h = gameLogic->getHint();
+        QString *str = new QString("HINT:\n");
+        if (h.destination == 0) {
+            str->append("Turn ");
+        } else {
+            str->append("Move ");
+        }
+        str->append(QString::number(h.number));
+        if (h.number == 1) {
+            str->append(" card from ");
+        } else {
+            str->append(" cards from ");
+        }
+        if (h.source == 0) {
+            str->append("waste");
+        }
+        if (h.source > 0 and h.source < 8) {
+            str->append("pile ");
+            str->append(QString::number(h.source));
+        }
+        if (h.source > 7 and h.source < 12) {
+            str->append("foundation ");
+            str->append(QString::number(h.source-7));
+        }
+        if (h.destination != 0)
+            str->append(" to ");
+
+        if (h.destination > 0 and h.destination < 8) {
+            str->append("pile ");
+            str->append(QString::number(h.destination));
+        }
+        if (h.destination > 7 and h.destination < 12) {
+            str->append("foundation");
+        }
+        str->append(".");
+
+        QMessageBox *m = new QMessageBox();
+        m->setText(*str);
+        m->exec();
+        delete str;
+        delete m;
+        i++;
+    } else {
+        i--;
+    }
 }
 
 void MyView::stockToFoundation()
@@ -263,12 +301,32 @@ void MyView::stockToFoundation()
         temp->setValue(info.hidden, info.color, info.number);
         scene->addItem(temp);
         if (gameLogic->isStockEmpty()) {
-            qDebug() << "Empty";
             stock->setPixmap(QPixmap(":/img/Resources/Joker.png"));
+            Hra2017::Hint h = gameLogic->getHint();
+            if (h.number ==  0) {
+                //YOU LOSE
+                QMessageBox *message = new QMessageBox();
+                QString *str = new QString("YOU LOSE!\nYour score: ");
+                int score = gameLogic->getScore();
+                str->append(QString::number(score));
+                message->setText(*str);
+                message->show();
+            }
         }
     } else {
+        Hra2017::Hint h = gameLogic->getHint();
+        if (h.number ==  0) {
+            //YOU LOSE
+            QMessageBox *message = new QMessageBox();
+            QString *str = new QString("YOU LOSE!\nYour score: ");
+            int score = gameLogic->getScore();
+            str->append(QString::number(score));
+            message->setText(*str);
+            message->show();
+        }
+        /* free waste */
         stock->setPixmap(QPixmap(":/img/Resources/Cover.png"));
-        if (waste->next != NULL) {
+        if (waste->next != NULL and waste->next->next != NULL) {
             MyCard *temp = waste->next;
             for (MyCard *c = temp->next; c; c = c->next) {
                 delete temp;
@@ -350,5 +408,4 @@ void MyView::resetGame()
 
     /* free stock button */
     delete stock;
-
 }

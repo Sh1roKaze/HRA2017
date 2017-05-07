@@ -151,7 +151,7 @@ void MyCard::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                 }
                 int a = isValidMove(column, target, count);
                 qDebug() << "RET: " << a;
-                if (0 == a or a == 100 or a == -100) {
+                if (0 == a or a == 16) {
                     prev->next = NULL;
                     if (prev->prev != NULL) {
                         prev->turnCard();
@@ -162,11 +162,17 @@ void MyCard::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                     temp->next = this;
                     prev = temp;
                     setColumn(target);
-                    if (a == 100) {
+                    MyView *thisView = (MyView*) this->parent();
+                    Hra2017::Game *game = thisView->getGameLogic();
+                    if (a == 16) {
                         //YOU WIN
-                    }
-                    if (a == -100) {
-                        //YOU LOSE
+                        QMessageBox *message = new QMessageBox();
+                        QString *str = new QString("YOU WIN!\nYour score: ");
+                        int score = game->getScore();
+                        str->append(QString::number(score));
+                        message->setText(*str);
+                        connect(message, SIGNAL(finished(int)), thisView, SLOT(removeButtonPressed()));
+                        message->show();
                     }
                 } else {
                     moveMyCard((lastX - x())/this->scale(), (lastY - y())/this->scale());

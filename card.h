@@ -7,6 +7,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSceneMouseEvent>
+#include <QMessageBox>
 
 class MyCard : public QObject, public QGraphicsPixmapItem
 {
