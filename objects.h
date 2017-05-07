@@ -38,6 +38,22 @@ namespace Hra2017
         spades = 3, pikes = 3
     };
 
+    enum Pile
+    {
+        waste,
+        tableau0,
+        tableau1,
+        tableau2,
+        tableau3,
+        tableau4,
+        tableau5,
+        tableau6,
+        foundation0,
+        foundation1,
+        foundation2,
+        foundation3
+    };
+
     struct CardInfo
     {
         CardNumber number{none};
@@ -51,6 +67,17 @@ namespace Hra2017
         Card *card;
         Card **from;
         int score;
+    };
+
+    struct Hint
+    {
+        Pile source{waste}; // Source pile
+        Pile destination{waste}; // Destination pile
+        int number{0}; // Number of cards to be moved
+
+        Hint() { }
+        Hint(Pile s, Pile d, int n) : source(s), destination(d), number(n) { }
+        Hint(int s, int d, int n) : Hint((Pile)s, (Pile)d, n) { }
     };
 
     class Card
@@ -77,13 +104,15 @@ namespace Hra2017
 
         Card *getTopMost();
 
+        Card *getNext();
+
         Card *getNthFromTop(int n);
 
         int getOrder();
 
         void fillInfoVector(std::vector<CardInfo> &v);
 
-    	std::string pileToString();
+        std::string pileToString();
     };
 
     class Game
@@ -101,7 +130,7 @@ namespace Hra2017
         int moveToTableau(Card *c, int dstPileNumber);
 
         void writePile(std::ofstream &output, Card *pile);
-    	void loadPile(int &i, int size, Card **pile);
+        void loadPile(int &i, int size, Card **pile);
 
      public:
         Game();
@@ -119,6 +148,7 @@ namespace Hra2017
         std::vector<CardInfo> getWaste();
         std::vector<CardInfo> getFoundationPile(int pileIndex);
         std::vector<CardInfo> getTableauPile(int pileIndex);
+        Hint getHint();
 
         bool undo();
 
