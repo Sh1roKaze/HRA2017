@@ -1,0 +1,12 @@
+# Doxyfile for doxygen settings.
+# xvlach16
+
+PROJECT_NAME           = "Hra 2017"
+
+PROJECT_BRIEF          = "Project to ICP course (The C++ programming language). Implementation of card game Passians (Solitaire) Klondike."
+
+OUTPUT_DIRECTORY       = "./doc"
+
+SOURCE_BROWSER         = YES
+
+EXTRACT_PRIVATE        = YES

@@ -1,9 +1,8 @@
-// ICP Project
-// Objects representing state of game
-// xvlach16
+/// \file objects.cc
+/// \author xvlach16
+/// \brief Implementation of objects representing state of game and game logic.
 
 #include <fstream>
-#include <iostream>
 #include <cstdlib>
 #include <ctime>
 #include "objects.h"

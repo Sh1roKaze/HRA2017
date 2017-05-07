@@ -1,6 +1,6 @@
-// ICP Project
-// Objects representing state of game
-// xvlach16
+/// \file objects.h
+/// \author xvlach16
+/// \brief Declaration of objects representing state of game and game logic.
 
 #ifndef OBJECTS_H
 #define OBJECTS_H
@@ -166,7 +166,7 @@ namespace Hra2017
     {
      private:
         std::vector<Card> pack; ///< Pack of cards. All cards are stored here.
-        std::stack<Move> history; ///< History of moves. Store for case of undo.
+        std::stack<Move> history; ///< History of moves stored for case of undo.
         Card* stock{nullptr}; ///< Stock is pile of hidden cards prepared to be turned onto waste.
         Card* waste{nullptr}; ///< Cards from stock came here and from her they can be moved to other places of playground.
         Card* foundation[4]{nullptr}; ///< Consists of 4 piles. Goal of the game is to place all cards here.
