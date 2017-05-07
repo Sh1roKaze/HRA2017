@@ -49,7 +49,7 @@ namespace Hra2017
             if (info.hidden)
                 return 1; // ALREDY_DONE
             if (onTop != nullptr)
-                return 2; // NOT_TOP_MOST
+                return -1; // NOT_TOP_MOST
 
             info.hidden = true;
             return 0; // SUCCESS
@@ -60,7 +60,7 @@ namespace Hra2017
             if (!info.hidden)
                 return 1; // ALREDY_DONE
             if (onTop != nullptr)
-                return 2; // NOT_TOP_MOST
+                return -1; // NOT_TOP_MOST
 
             info.hidden = false;
             return 0; // SUCCESS
@@ -97,6 +97,14 @@ namespace Hra2017
             return onTop;
         }
 
+        int Card::getOrder()
+        {
+            if (onTop == nullptr)
+                return 1;
+
+            return onTop->getOrder() + 1;
+        }
+
         Card *Card::getNthFromTop(int n)
         {
             int order = getOrder();
@@ -106,14 +114,6 @@ namespace Hra2017
                 return onTop->getNthFromTop(n);
 
             return this;
-        }
-
-        int Card::getOrder()
-        {
-            if (onTop == nullptr)
-                return 1;
-
-            return onTop->getOrder() + 1;
         }
 
         void Card::fillInfoVector(std::vector<CardInfo> &v)
@@ -577,7 +577,6 @@ namespace Hra2017
                 w = w->getNext();
             }
 
-            return Hint(Pile::waste, Pile::waste, 0);
-            
+            return Hint();
         }
 }
