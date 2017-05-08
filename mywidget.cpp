@@ -25,6 +25,7 @@ myWidget::myWidget()
     fourGameLayout->addWidget(viewList[0], 0, 0, 1, 1, 0);
     widget1 = new QWidget();
     widget1->setLayout(fourGameLayout);
+    widget1->setMaximumSize(1920, 1080);
     this->addWidget(widget1);
 
     /* sets active layout */
@@ -80,8 +81,8 @@ void myWidget::addGameButtonPressed()
 {
     /* add game */
     if (runningGames < 4) {
-        viewList.append(new MyView());
-        MyView *temp = viewList.last();
+        MyView *temp = new MyView();
+        viewList.append(temp);
         connect(temp->getButton5(), SIGNAL(buttonPressed()), this, SLOT(addGameButtonPressed()));
         connect(temp, SIGNAL(stopButtonPressed()), this, SLOT(endGameButtonPressed()));
         runningGames++;
@@ -94,8 +95,8 @@ void myWidget::endGameButtonPressed()
     /* stop game */
     runningGames--;
     if (runningGames == 0) {
-        viewList.append(new MyView());
-        MyView *temp = viewList.last();
+        MyView *temp = new MyView();
+        viewList.append(temp);
         connect(temp->getButton5(), SIGNAL(buttonPressed()), this, SLOT(addGameButtonPressed()));
         connect(temp, SIGNAL(stopButtonPressed()), this, SLOT(endGameButtonPressed()));
         runningGames++;

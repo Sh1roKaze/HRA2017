@@ -194,7 +194,6 @@ void MyView::removeButtonPressed()
     resetGame();
     gameState = 0;
     delete gameLogic;
-    delete scene;
     emit stopButtonPressed();
 }
 
