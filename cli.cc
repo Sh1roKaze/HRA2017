@@ -1,6 +1,6 @@
 /// \mainpage
-/// \author Jan Věrný (xverny00)
-/// \author Antonín Vlach (xvlach16)
+/// \author Jan Verny (xverny00)
+/// \author Antonin Vlach (xvlach16)
 /// \date 2017
 /// \copyright University project
 
@@ -580,7 +580,7 @@ namespace Hra2017
     };
 }
 
-/// \brief Initialises and runs the game and runs it.
+/// \brief Initialises and runs the game.
 /// \param argc Count of command line arguments.
 /// \param argv Command line arguments. If there is some, it is filename of saved game to be loaded.
 /// \return 0 in case of succesfully ended program.
