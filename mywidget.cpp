@@ -1,3 +1,7 @@
+/// \file mywidget.cpp
+/// \author xverny00
+/// \brief Declaration of custom variant of QStackedWidget
+
 #include "mywidget.h"
 
 #include <QDebug>

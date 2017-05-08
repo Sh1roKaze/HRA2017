@@ -1,3 +1,7 @@
+/// \file card.cpp
+/// \author xverny00
+/// \brief Implementation of custom variant of QObject and QGraphicsPixmapItem, represents a single card in gui
+
 #include "card.h"
 
 #include <QDebug>

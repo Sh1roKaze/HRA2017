@@ -1,3 +1,7 @@
+/// \file myview.cpp
+/// \author xverny00
+/// \brief Implementation of custom variant of QGraphicsView
+
 #include "myview.h"
 
 #include <QDebug>

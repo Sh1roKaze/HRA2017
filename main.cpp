@@ -1,10 +1,11 @@
+/// \file main.cpp
+/// \author xverny00
+/// \brief 
+
 #include "card.h"
 #include "mywidget.h"
 
 #include <QApplication>
-//#include <QGraphicsScene>
-//#include <QGraphicsView>
-//#include <QGridLayout>
 #include <QMenuBar>
 
 int main(int argc, char *argv[])

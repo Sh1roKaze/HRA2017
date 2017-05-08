@@ -1,3 +1,7 @@
+/// \file mybutton.cpp
+/// \author xverny00
+/// \brief Implementation of custom variant of QObject and QGraphicsPixmapItem, represents a button
+
 #include "mybutton.h"
 
 MyButton::MyButton(QObject *parent) : QObject(parent)
